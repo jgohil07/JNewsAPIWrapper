@@ -7,7 +7,7 @@
 
 Clone the GitHub repository and import the project in IDE such as Eclipse or IntelliJ. Setup the build path and include necessary HTTP Client and JACKSON libraries.
 
-** [News API](https://newsapi.org/) is a simple and easy-to-use API that returns JSON meta-data for the headlines currently published on a range of news sources and blogs**
+**[News API](https://newsapi.org/) is a simple and easy-to-use API that returns JSON meta-data for the headlines currently published on a range of news sources and blogs.**
 
 JNewsAPIWrapper is essentially a API Wrapper written in Java. It is can fetch all Articles for all Sources for all available Categories provided by the News API. Use it for your own code or website. Get a jump start or integrate into existing code. News API requires a API key. Currently project has one free API key I have generated. It may not work if many users are requesting simultaneously.
 
