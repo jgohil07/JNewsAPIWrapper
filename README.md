@@ -15,7 +15,7 @@ JNewsAPIWrapper is essentially a API Wrapper written in Java. It is can fetch al
 
 ## Future RoadMap
 
-I started it to generate a single web page for personal use. Now, I am also looking at JavaFX and Windows UWP. Let me know if any ideas.
+I started it to generate a single web page at runtime for personal use. Now, I am also looking at JavaFX and Windows UWP. Let me know if any ideas.
 
 ## Support
 
