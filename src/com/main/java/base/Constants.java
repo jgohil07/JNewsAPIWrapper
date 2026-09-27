@@ -1,5 +1,7 @@
 package com.main.java.base;
 
+import com.main.java.config.Env;
+
 /**
  * @author jgohil
  *
@@ -12,7 +14,8 @@ public class Constants {
 	protected static String sourceURIPath = "/sources";
 	protected static String articlesURIPath = "/articles";
 	
-	protected static String apiKey = "***REMOVED***";
+	/** News API key, read from the NEWSAPI_KEY environment variable or .env (see .env.example); null when unset. */
+	protected static String apiKey = Env.get("NEWSAPI_KEY").orElse(null);
 	
 	protected static String sourceDefault = "cnn";
 	
