@@ -1,0 +1,351 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/jgohil07/JNewsAPIWrapper/schema/news-envelope.v1.json",
+ "title": "JNewsAPIWrapper news envelope, version 1",
+ "description": "Output of `jnews fetch|india --format json` and of the site's data/*.json. A failed run writes nothing, so a document that exists always has status ok or partial. Additive changes keep schema_version 1; anything else bumps it.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema_version",
+  "generator",
+  "generated_at",
+  "query",
+  "status",
+  "categories",
+  "sources",
+  "items"
+ ],
+ "properties": {
+  "schema_version": {
+   "const": 1
+  },
+  "generator": {
+   "type": "string"
+  },
+  "generated_at": {
+   "type": "string",
+   "format": "date-time"
+  },
+  "query": {
+   "type": "object"
+  },
+  "status": {
+   "enum": [
+    "ok",
+    "partial"
+   ]
+  },
+  "categories": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/category"
+   }
+  },
+  "sources": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/source"
+   }
+  },
+  "items": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/item"
+   }
+  }
+ },
+ "$defs": {
+  "item": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "id",
+    "title",
+    "url",
+    "source",
+    "published_at",
+    "fetched_at",
+    "summary",
+    "kind",
+    "region",
+    "language",
+    "categories",
+    "topics",
+    "symbols",
+    "also_covered_by"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$",
+     "description": "sha256 of the canonical URL"
+    },
+    "title": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 400
+    },
+    "url": {
+     "type": "string",
+     "pattern": "^https?://",
+     "maxLength": 2048
+    },
+    "source": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "id",
+      "name"
+     ],
+     "properties": {
+      "id": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      }
+     }
+    },
+    "published_at": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "fetched_at": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "summary": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "maxLength": 500
+    },
+    "kind": {
+     "enum": [
+      "news",
+      "filing",
+      "policy"
+     ]
+    },
+    "region": {
+     "enum": [
+      "in",
+      "world"
+     ]
+    },
+    "language": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "categories": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "string"
+     }
+    },
+    "topics": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "id",
+       "by"
+      ],
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "by": {
+        "enum": [
+         "feed",
+         "rule"
+        ]
+       }
+      }
+     }
+    },
+    "symbols": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "symbol",
+       "match"
+      ],
+      "properties": {
+       "symbol": {
+        "type": "string",
+        "pattern": "^[A-Z0-9&-]{1,20}$"
+       },
+       "match": {
+        "enum": [
+         "exact",
+         "name"
+        ]
+       }
+      }
+     }
+    },
+    "also_covered_by": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "source_id",
+       "source_name",
+       "url",
+       "published_at"
+      ],
+      "properties": {
+       "source_id": {
+        "type": "string"
+       },
+       "source_name": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string",
+        "pattern": "^https?://"
+       },
+       "published_at": {
+        "type": "string",
+        "format": "date-time"
+       }
+      }
+     }
+    }
+   }
+  },
+  "source": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "id",
+    "name",
+    "homepage",
+    "categories",
+    "fallback",
+    "status",
+    "items",
+    "rejected",
+    "newest_at",
+    "max_age_hours",
+    "duration_ms",
+    "error",
+    "note"
+   ],
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "homepage": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^https://"
+    },
+    "categories": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "fallback": {
+     "type": "boolean"
+    },
+    "status": {
+     "enum": [
+      "ok",
+      "stale",
+      "failed",
+      "skipped"
+     ]
+    },
+    "items": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "rejected": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "newest_at": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "format": "date-time"
+    },
+    "max_age_hours": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "duration_ms": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "error": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "note": {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   }
+  },
+  "category": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "id",
+    "label",
+    "group",
+    "healthy",
+    "min_healthy",
+    "required",
+    "ok"
+   ],
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "label": {
+     "type": "string"
+    },
+    "group": {
+     "type": "string"
+    },
+    "healthy": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "min_healthy": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "required": {
+     "type": "boolean"
+    },
+    "ok": {
+     "type": "boolean"
+    }
+   }
+  }
+ }
+}

@@ -31,8 +31,12 @@ public final class HttpFetcher {
 
 	public static final String USER_AGENT = "JNewsAPIWrapper/2.0 (+https://github.com/jgohil07/JNewsAPIWrapper)";
 
-	/** Browser-like agent for publishers whose CDNs reject unknown agents (still identifies the project). */
-	public static final String BROWSER_USER_AGENT = "Mozilla/5.0 (compatible; JNewsAPIWrapper/2.0; +https://github.com/jgohil07/JNewsAPIWrapper)";
+	/**
+	 * Browser agent for publishers whose CDNs drop other agents (NSE, Business Standard; checked 2026-09-27). The
+	 * project token stays at the end so the traffic remains identifiable.
+	 */
+	public static final String BROWSER_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+			+ "(KHTML, like Gecko) Chrome/128 Safari/537.36 JNewsAPIWrapper/2.0";
 
 	private static final HttpFetcher DEFAULT = builder().build();
 

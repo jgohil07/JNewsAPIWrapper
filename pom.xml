@@ -21,7 +21,6 @@
     <jackson.version>2.22.3</jackson.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
     <orgjson.version>20260814</orgjson.version>
-    <rome.version>2.1.0</rome.version>
     <picocli.version>4.7.7</picocli.version>
     <junit.version>6.1.3</junit.version>
     <json-schema-validator.version>3.0.7</json-schema-validator.version>
@@ -48,11 +47,6 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>${orgjson.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.rometools</groupId>
-      <artifactId>rome</artifactId>
-      <version>${rome.version}</version>
     </dependency>
     <dependency>
       <groupId>info.picocli</groupId>

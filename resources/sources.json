@@ -1,0 +1,1498 @@
+{
+ "_comment": "Source registry. Every feed was checked on 2026-09-27 (see research notes). public=false sources never reach the GitHub Pages site. maxAgeHours: newest item older than this marks the source STALE.",
+ "categories": [
+  {
+   "id": "india",
+   "label": "India",
+   "group": "india",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "india-markets",
+   "label": "Markets",
+   "group": "india-finance",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "india-business",
+   "label": "Companies & Banking",
+   "group": "india-finance",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "economy",
+   "label": "Economy & Policy",
+   "group": "india-finance",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "filings",
+   "label": "NSE Filings",
+   "group": "india-finance",
+   "minHealthy": 1,
+   "required": false
+  },
+  {
+   "id": "world",
+   "label": "World",
+   "group": "world",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "business",
+   "label": "Global Business",
+   "group": "world",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "tech",
+   "label": "Tech",
+   "group": "world",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "science",
+   "label": "Science",
+   "group": "world",
+   "minHealthy": 2,
+   "required": true
+  }
+ ],
+ "sources": [
+  {
+   "id": "et-markets",
+   "name": "Economic Times · Markets",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms",
+   "homepage": "https://economictimes.indiatimes.com/markets",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "markets"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-stocks",
+   "name": "Economic Times · Stocks",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/markets/stocks/rssfeeds/2146842.cms",
+   "homepage": "https://economictimes.indiatimes.com/markets/stocks",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "markets",
+    "stocks"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-ipo",
+   "name": "Economic Times · IPOs",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/markets/ipos/fpos/rssfeeds/14655708.cms",
+   "homepage": "https://economictimes.indiatimes.com/markets/ipos/fpos",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "ipo"
+   ],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-commodities",
+   "name": "Economic Times · Commodities",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/markets/commodities/rssfeeds/1808152121.cms",
+   "homepage": "https://economictimes.indiatimes.com/markets/commodities",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "commodities"
+   ],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-forex",
+   "name": "Economic Times · Forex",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/markets/forex/rssfeeds/1150221130.cms",
+   "homepage": "https://economictimes.indiatimes.com/markets/forex",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "forex"
+   ],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-bonds",
+   "name": "Economic Times · Bonds",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/markets/bonds/rssfeeds/2146846.cms",
+   "homepage": "https://economictimes.indiatimes.com/markets/bonds",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "bonds"
+   ],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-company",
+   "name": "Economic Times · Companies",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/news/company/rssfeeds/2143429.cms",
+   "homepage": "https://economictimes.indiatimes.com/news/company",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "companies"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-banking",
+   "name": "Economic Times · Banking & Finance",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/industry/banking/finance/rssfeeds/13358259.cms",
+   "homepage": "https://economictimes.indiatimes.com/industry/banking/finance",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "banking"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-mf",
+   "name": "Economic Times · Mutual Funds",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/mf/mf-news/rssfeeds/1107225967.cms",
+   "homepage": "https://economictimes.indiatimes.com/mf/mf-news",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "funds"
+   ],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "et-economy",
+   "name": "Economic Times · Economy",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms",
+   "homepage": "https://economictimes.indiatimes.com/news/economy",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "economy"
+   ],
+   "topics": [
+    "economy"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "mint-markets",
+   "name": "Mint · Markets",
+   "type": "rss",
+   "url": "https://www.livemint.com/rss/markets",
+   "homepage": "https://www.livemint.com/market",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "markets"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "mint-companies",
+   "name": "Mint · Companies",
+   "type": "rss",
+   "url": "https://www.livemint.com/rss/companies",
+   "homepage": "https://www.livemint.com/companies",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "companies"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "mint-money",
+   "name": "Mint · Money",
+   "type": "rss",
+   "url": "https://www.livemint.com/rss/money",
+   "homepage": "https://www.livemint.com/money",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "personal-finance"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "mint-economy",
+   "name": "Mint · Economy",
+   "type": "rss",
+   "url": "https://www.livemint.com/rss/economy",
+   "homepage": "https://www.livemint.com/economy",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "economy"
+   ],
+   "topics": [
+    "economy"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "bs-markets",
+   "name": "Business Standard · Markets",
+   "type": "rss",
+   "url": "https://www.business-standard.com/rss/markets-106.rss",
+   "homepage": "https://www.business-standard.com/markets",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "markets"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "browser",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "bs-companies",
+   "name": "Business Standard · Companies",
+   "type": "rss",
+   "url": "https://www.business-standard.com/rss/companies-101.rss",
+   "homepage": "https://www.business-standard.com/companies",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "companies"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "browser",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "bs-finance",
+   "name": "Business Standard · Finance",
+   "type": "rss",
+   "url": "https://www.business-standard.com/rss/finance-103.rss",
+   "homepage": "https://www.business-standard.com/finance",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "banking"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "browser",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "bs-economy",
+   "name": "Business Standard · Economy",
+   "type": "rss",
+   "url": "https://www.business-standard.com/rss/economy-102.rss",
+   "homepage": "https://www.business-standard.com/economy",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "economy"
+   ],
+   "topics": [
+    "economy"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "browser",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "hbl-markets",
+   "name": "BusinessLine · Markets",
+   "type": "rss",
+   "url": "https://www.thehindubusinessline.com/markets/feeder/default.rss",
+   "homepage": "https://www.thehindubusinessline.com/markets/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "markets"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "hbl-commodities",
+   "name": "BusinessLine · Commodities",
+   "type": "rss",
+   "url": "https://www.thehindubusinessline.com/markets/commodities/feeder/default.rss",
+   "homepage": "https://www.thehindubusinessline.com/markets/commodities/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "commodities"
+   ],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "hbl-forex",
+   "name": "BusinessLine · Forex",
+   "type": "rss",
+   "url": "https://www.thehindubusinessline.com/markets/forex/feeder/default.rss",
+   "homepage": "https://www.thehindubusinessline.com/markets/forex/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [
+    "forex"
+   ],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "hbl-companies",
+   "name": "BusinessLine · Companies",
+   "type": "rss",
+   "url": "https://www.thehindubusinessline.com/companies/feeder/default.rss",
+   "homepage": "https://www.thehindubusinessline.com/companies/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "companies"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "hbl-money",
+   "name": "BusinessLine · Money & Banking",
+   "type": "rss",
+   "url": "https://www.thehindubusinessline.com/money-and-banking/feeder/default.rss",
+   "homepage": "https://www.thehindubusinessline.com/money-and-banking/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [
+    "banking"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "hbl-economy",
+   "name": "BusinessLine · Economy",
+   "type": "rss",
+   "url": "https://www.thehindubusinessline.com/economy/feeder/default.rss",
+   "homepage": "https://www.thehindubusinessline.com/economy/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "economy"
+   ],
+   "topics": [
+    "economy"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "ndtv-profit",
+   "name": "NDTV Profit",
+   "type": "rss",
+   "url": "https://feeds.feedburner.com/ndtvprofit-latest",
+   "homepage": "https://www.ndtvprofit.com/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "rbi-press",
+   "name": "RBI · Press Releases",
+   "type": "rss",
+   "url": "https://www.rbi.org.in/pressreleases_rss.xml",
+   "homepage": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx",
+   "region": "in",
+   "kind": "policy",
+   "language": "en",
+   "categories": [
+    "economy"
+   ],
+   "topics": [
+    "policy",
+    "rbi"
+   ],
+   "maxAgeHours": 504,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 5,
+   "keyEnv": null
+  },
+  {
+   "id": "rbi-notifications",
+   "name": "RBI · Notifications",
+   "type": "rss",
+   "url": "https://www.rbi.org.in/notifications_rss.xml",
+   "homepage": "https://www.rbi.org.in/Scripts/NotificationUser.aspx",
+   "region": "in",
+   "kind": "policy",
+   "language": "en",
+   "categories": [
+    "economy"
+   ],
+   "topics": [
+    "policy",
+    "rbi"
+   ],
+   "maxAgeHours": 504,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 5,
+   "keyEnv": null
+  },
+  {
+   "id": "nse-announcements",
+   "name": "NSE · Corporate Announcements",
+   "type": "nse-rss",
+   "url": "https://nsearchives.nseindia.com/content/RSS/Online_announcements.xml",
+   "homepage": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+   "region": "in",
+   "kind": "filing",
+   "language": "en",
+   "categories": [
+    "filings"
+   ],
+   "topics": [
+    "filings"
+   ],
+   "maxAgeHours": 96,
+   "public": true,
+   "agent": "browser",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": "dd-MMM-yyyy HH:mm:ss",
+   "fallback": false,
+   "priority": 5,
+   "keyEnv": null
+  },
+  {
+   "id": "et-india",
+   "name": "Economic Times · India",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/news/india/rssfeeds/81582957.cms",
+   "homepage": "https://economictimes.indiatimes.com/news/india",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "mint-news",
+   "name": "Mint · News",
+   "type": "rss",
+   "url": "https://www.livemint.com/rss/news",
+   "homepage": "https://www.livemint.com/news",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "hindu-national",
+   "name": "The Hindu · National",
+   "type": "rss",
+   "url": "https://www.thehindu.com/news/national/feeder/default.rss",
+   "homepage": "https://www.thehindu.com/news/national/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "hindu-business",
+   "name": "The Hindu · Business",
+   "type": "rss",
+   "url": "https://www.thehindu.com/business/feeder/default.rss",
+   "homepage": "https://www.thehindu.com/business/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 20,
+   "keyEnv": null
+  },
+  {
+   "id": "ie-india",
+   "name": "Indian Express · India",
+   "type": "rss",
+   "url": "https://indianexpress.com/section/india/feed/",
+   "homepage": "https://indianexpress.com/section/india/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "ie-business",
+   "name": "Indian Express · Business",
+   "type": "rss",
+   "url": "https://indianexpress.com/section/business/feed/",
+   "homepage": "https://indianexpress.com/section/business/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-business"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 22,
+   "keyEnv": null
+  },
+  {
+   "id": "bbc-world",
+   "name": "BBC News · World",
+   "type": "rss",
+   "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+   "homepage": "https://www.bbc.co.uk/news/world",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "world"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "guardian-world",
+   "name": "The Guardian · World",
+   "type": "rss",
+   "url": "https://www.theguardian.com/world/rss",
+   "homepage": "https://www.theguardian.com/world",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "world"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "aljazeera",
+   "name": "Al Jazeera",
+   "type": "rss",
+   "url": "https://www.aljazeera.com/xml/rss/all.xml",
+   "homepage": "https://www.aljazeera.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "world"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "npr-news",
+   "name": "NPR · News",
+   "type": "rss",
+   "url": "https://feeds.npr.org/1001/rss.xml",
+   "homepage": "https://www.npr.org/sections/news/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "world"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "dw-world",
+   "name": "DW · World",
+   "type": "rss",
+   "url": "https://rss.dw.com/rdf/rss-en-world",
+   "homepage": "https://www.dw.com/en/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "world"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "bbc-business",
+   "name": "BBC News · Business",
+   "type": "rss",
+   "url": "https://feeds.bbci.co.uk/news/business/rss.xml",
+   "homepage": "https://www.bbc.co.uk/news/business",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "business"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "guardian-business",
+   "name": "The Guardian · Business",
+   "type": "rss",
+   "url": "https://www.theguardian.com/business/rss",
+   "homepage": "https://www.theguardian.com/business",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "business"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "cnbc-world",
+   "name": "CNBC · World Markets",
+   "type": "rss",
+   "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100727362",
+   "homepage": "https://www.cnbc.com/world/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "business"
+   ],
+   "topics": [
+    "markets"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "npr-business",
+   "name": "NPR · Business",
+   "type": "rss",
+   "url": "https://feeds.npr.org/1006/rss.xml",
+   "homepage": "https://www.npr.org/sections/business/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "business"
+   ],
+   "topics": [],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "ars",
+   "name": "Ars Technica",
+   "type": "rss",
+   "url": "https://feeds.arstechnica.com/arstechnica/index",
+   "homepage": "https://arstechnica.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "verge",
+   "name": "The Verge",
+   "type": "rss",
+   "url": "https://www.theverge.com/rss/index.xml",
+   "homepage": "https://www.theverge.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "bbc-tech",
+   "name": "BBC News · Technology",
+   "type": "rss",
+   "url": "https://feeds.bbci.co.uk/news/technology/rss.xml",
+   "homepage": "https://www.bbc.co.uk/news/technology",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "guardian-tech",
+   "name": "The Guardian · Technology",
+   "type": "rss",
+   "url": "https://www.theguardian.com/technology/rss",
+   "homepage": "https://www.theguardian.com/technology",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "et-tech",
+   "name": "Economic Times · Tech",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/tech/rssfeeds/13357270.cms",
+   "homepage": "https://economictimes.indiatimes.com/tech",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "mint-technology",
+   "name": "Mint · Technology",
+   "type": "rss",
+   "url": "https://www.livemint.com/rss/technology",
+   "homepage": "https://www.livemint.com/technology",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "hn-frontpage",
+   "name": "Hacker News · Front Page",
+   "type": "rss",
+   "url": "https://hnrss.org/frontpage",
+   "homepage": "https://news.ycombinator.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 20,
+   "keyEnv": null
+  },
+  {
+   "id": "lobsters",
+   "name": "Lobsters",
+   "type": "rss",
+   "url": "https://lobste.rs/rss",
+   "homepage": "https://lobste.rs/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "tech"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 22,
+   "keyEnv": null
+  },
+  {
+   "id": "bbc-science",
+   "name": "BBC News · Science & Environment",
+   "type": "rss",
+   "url": "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+   "homepage": "https://www.bbc.co.uk/news/science_and_environment",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "science"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "guardian-science",
+   "name": "The Guardian · Science",
+   "type": "rss",
+   "url": "https://www.theguardian.com/science/rss",
+   "homepage": "https://www.theguardian.com/science",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "science"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "npr-science",
+   "name": "NPR · Science",
+   "type": "rss",
+   "url": "https://feeds.npr.org/1007/rss.xml",
+   "homepage": "https://www.npr.org/sections/science/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "science"
+   ],
+   "topics": [],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "nasa",
+   "name": "NASA · News Releases",
+   "type": "rss",
+   "url": "https://www.nasa.gov/news-release/feed/",
+   "homepage": "https://www.nasa.gov/news/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "science"
+   ],
+   "topics": [
+    "space"
+   ],
+   "maxAgeHours": 168,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "sciencedaily",
+   "name": "ScienceDaily · Top",
+   "type": "rss",
+   "url": "https://www.sciencedaily.com/rss/top.xml",
+   "homepage": "https://www.sciencedaily.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "science"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "hindu-scitech",
+   "name": "The Hindu · Sci-Tech",
+   "type": "rss",
+   "url": "https://www.thehindu.com/sci-tech/feeder/default.rss",
+   "homepage": "https://www.thehindu.com/sci-tech/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "science"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 20,
+   "keyEnv": null
+  },
+  {
+   "id": "google-news-in-business",
+   "name": "Google News · India Business",
+   "type": "rss",
+   "url": "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en",
+   "homepage": "https://news.google.com/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets",
+    "india-business"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": false,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": true,
+   "priority": 40,
+   "keyEnv": null
+  },
+  {
+   "id": "google-news-world",
+   "name": "Google News · World",
+   "type": "rss",
+   "url": "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en",
+   "homepage": "https://news.google.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "world"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": false,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": true,
+   "priority": 40,
+   "keyEnv": null
+  },
+  {
+   "id": "newsapi-in-business",
+   "name": "News API · Indian finance publishers",
+   "type": "newsapi-v2",
+   "url": "https://newsapi.org/v2/everything?domains=economictimes.indiatimes.com,livemint.com,business-standard.com,thehindubusinessline.com&language=en&sortBy=publishedAt&pageSize=50",
+   "homepage": "https://newsapi.org/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets",
+    "india-business"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": false,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": true,
+   "priority": 50,
+   "keyEnv": "NEWSAPI_KEY"
+  },
+  {
+   "id": "gnews-in-business",
+   "name": "GNews · India Business",
+   "type": "gnews",
+   "url": "https://gnews.io/api/v4/top-headlines?category=business&country=in&lang=en&max=10",
+   "homepage": "https://gnews.io/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets",
+    "india-business"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": false,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": true,
+   "priority": 52,
+   "keyEnv": "GNEWS_KEY"
+  },
+  {
+   "id": "marketaux-in",
+   "name": "MarketAux · India",
+   "type": "marketaux",
+   "url": "https://api.marketaux.com/v1/news/all?countries=in&language=en&limit=3",
+   "homepage": "https://www.marketaux.com/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "india-markets"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": false,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": true,
+   "priority": 54,
+   "keyEnv": "MARKETAUX_KEY"
+  }
+ ]
+}

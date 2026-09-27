@@ -1,0 +1,240 @@
+{
+ "_comment": "Keyword rules that add topics (by: rule). Patterns are case-insensitive Java regexes joined with OR; a rule applies only to items in its appliesTo categories. Feed-section topics (by: feed) come from sources.json.",
+ "rules": [
+  {
+   "topic": "markets",
+   "label": "Markets",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "\\bSensex\\b",
+    "\\bNifty(?:\\s?50|\\s?Bank)?\\b",
+    "\\bstock markets?\\b",
+    "(?-i:\\bFIIs?\\b)",
+    "(?-i:\\bFPIs?\\b)",
+    "(?-i:\\bDIIs?\\b)",
+    "\\bDalal Street\\b"
+   ]
+  },
+  {
+   "topic": "stocks",
+   "label": "Stocks",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "\\bshares? (?:rose|fell|jumped|surged|slumped|tanked|gained|declined|rallied)\\b",
+    "\\bstocks? to (?:buy|watch)\\b",
+    "\\btarget price\\b",
+    "\\b52-week (?:high|low)\\b",
+    "\\bupper circuit\\b",
+    "\\blower circuit\\b"
+   ]
+  },
+  {
+   "topic": "ipo",
+   "label": "IPOs",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "(?-i:\\bIPOs?\\b)",
+    "(?-i:\\bDRHP\\b)",
+    "\\bgrey market premium\\b",
+    "(?-i:\\bGMP\\b)",
+    "\\blisting gains?\\b",
+    "\\banchor investors?\\b",
+    "\\bpublic issue\\b"
+   ]
+  },
+  {
+   "topic": "earnings",
+   "label": "Earnings",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "\\bQ[1-4]\\s?(?:FY\\s?\\d{2,4}\\s)?(?:results?|earnings|profit|net profit)\\b",
+    "\\bquarterly (?:results?|earnings)\\b",
+    "\\bnet profit\\b",
+    "(?-i:\\bPAT\\b)",
+    "(?-i:\\bEBITDA\\b)",
+    "\\bearnings (?:beat|miss)\\b"
+   ]
+  },
+  {
+   "topic": "rbi",
+   "label": "RBI",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "(?-i:\\bRBI\\b)",
+    "\\bReserve Bank of India\\b",
+    "\\brepo rate\\b",
+    "\\bmonetary policy committee\\b",
+    "(?-i:\\bMPC\\b)"
+   ]
+  },
+  {
+   "topic": "sebi",
+   "label": "SEBI",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "(?-i:\\bSEBI\\b)",
+    "\\bSecurities and Exchange Board of India\\b"
+   ]
+  },
+  {
+   "topic": "commodities",
+   "label": "Commodities",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "\\bgold (?:price|prices|rate|rates)\\b",
+    "\\bsilver (?:price|prices|rate|rates)\\b",
+    "\\bcrude oil\\b",
+    "\\bBrent\\b",
+    "(?-i:\\bMCX\\b)"
+   ]
+  },
+  {
+   "topic": "forex",
+   "label": "Rupee & Forex",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "\\brupee\\b",
+    "\\bforex reserves?\\b",
+    "\\bdollar index\\b",
+    "(?-i:\\bUSD/INR\\b)"
+   ]
+  },
+  {
+   "topic": "banking",
+   "label": "Banking",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "\\bbanks?\\b",
+    "(?-i:\\bNBFCs?\\b)",
+    "\\blenders?\\b",
+    "(?-i:\\bNPAs?\\b)",
+    "\\bcredit growth\\b"
+   ]
+  },
+  {
+   "topic": "funds",
+   "label": "Mutual Funds",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "\\bmutual funds?\\b",
+    "(?-i:\\bSIPs?\\b)",
+    "(?-i:\\bAMCs?\\b)",
+    "(?-i:\\bNFOs?\\b)",
+    "(?-i:\\bETFs?\\b)"
+   ]
+  },
+  {
+   "topic": "tax",
+   "label": "Tax",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india"
+   ],
+   "patterns": [
+    "(?-i:\\bGST\\b)",
+    "\\bincome tax\\b",
+    "(?-i:\\bTDS\\b)",
+    "(?-i:\\bITR\\b)"
+   ]
+  },
+  {
+   "topic": "crypto",
+   "label": "Crypto",
+   "appliesTo": [
+    "india-markets",
+    "india-business",
+    "economy",
+    "business",
+    "india",
+    "tech"
+   ],
+   "patterns": [
+    "\\bbitcoin\\b",
+    "\\bcrypto(?:currency|currencies)?\\b",
+    "\\bethereum\\b"
+   ]
+  },
+  {
+   "topic": "ai",
+   "label": "AI",
+   "appliesTo": [
+    "tech",
+    "business",
+    "india-business",
+    "science"
+   ],
+   "patterns": [
+    "(?-i:\\bAI\\b)",
+    "\\bartificial intelligence\\b",
+    "(?-i:\\bLLMs?\\b)",
+    "\\bOpenAI\\b",
+    "\\bAnthropic\\b",
+    "\\bGemini\\b",
+    "\\bClaude\\b"
+   ]
+  }
+ ]
+}
