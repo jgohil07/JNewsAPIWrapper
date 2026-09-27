@@ -20,7 +20,7 @@ and adds:
   | Sports | BBC Sport, The Guardian, ESPNcricinfo, The Hindu, Mint |
 
   Google News, News API v2, GNews and MarketAux serve as command-line fallbacks.
-- **A command-line India finance feed** for other programs, such as Thesis-Engine, with a versioned JSON schema:
+- **A command-line India finance feed** for other programs, with a versioned JSON schema:
   markets, companies & banking, economy & policy, and NSE filings, optionally for a single NSE symbol.
 - **An optional static website**: a minimal "wire" of headlines with a source-health view. It is built by the same
   jar and deployed to GitHub Pages every 6 hours.
@@ -71,18 +71,6 @@ java -jar target/jnews.jar site build --out _site && java -jar target/jnews.jar 
 Exit codes: `0` ok, `3` partial (data written, some sources unhealthy), `1` failed (no data written), `2` usage or
 configuration error. The full contract for programs, including fields, guarantees and known gaps, is in
 [docs/cli-contract.md](docs/cli-contract.md) and [schema/news-envelope.v1.json](schema/news-envelope.v1.json).
-
-### Thesis-Engine
-
-```bash
-tmp=$(mktemp) && java -jar /path/to/jnews.jar india --symbol "$SYMBOL" --since 2d --format json > "$tmp"
-case $? in 0|3) mv "$tmp" news.json ;; *) rm -f "$tmp"; echo "news unavailable" >&2 ;; esac
-```
-
-A failed run (exit 1 or 2) never overwrites the last good `news.json`.
-
-NSE's own announcements carry `symbols[].match = "exact"`. Headlines that name the company carry `"name"`, which is
-lower confidence.
 
 ## Website (GitHub Pages)
 
