@@ -1,0 +1,114 @@
+public class com.main.java.aggreators.ArticleAggreator extends com.main.java.base.Constants {
+public com.main.java.aggreators.ArticleAggreator();
+public com.main.java.models.Articles getArticlesForSource();
+public com.main.java.models.Articles getArticlesForSource(java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+public com.main.java.models.Articles getArticlesForSource(java.lang.String, java.lang.String);
+public com.main.java.models.Articles getArticlesForSource(java.lang.String);
+public class com.main.java.aggreators.SourcesAggreator extends com.main.java.base.Constants {
+public com.main.java.aggreators.SourcesAggreator();
+public com.main.java.models.Sources getAllSources();
+public com.main.java.models.Sources getAllSources(java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+public com.main.java.models.Sources getSourcesForCategory();
+public com.main.java.models.Sources getSourcesForCategory(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+public com.main.java.models.Sources getSourcesForCategory(java.lang.String);
+public class com.main.java.base.Constants {
+protected static java.lang.String apiKey;
+protected static java.lang.String apiVersion;
+protected static java.lang.String articlesURIPath;
+protected static java.lang.String baseURI;
+protected static java.lang.String categoryDefault;
+protected static java.lang.String countryDefault;
+protected static java.lang.String languageDefault;
+protected static java.lang.String sortByDefault;
+protected static java.lang.String sourceDefault;
+protected static java.lang.String sourceURIPath;
+protected static java.lang.String[] categorySupported;
+protected static java.lang.String[] countrySupported;
+protected static java.lang.String[] languageSupported;
+protected static java.lang.String[] sortbySupported;
+public com.main.java.base.Constants();
+public class com.main.java.models.Article {
+public com.main.java.models.Article();
+public java.lang.String getAuthor();
+public java.lang.String getDescription();
+public java.lang.String getPublishedAt();
+public java.lang.String getTitle();
+public java.lang.String getUrl();
+public java.lang.String getUrlToImage();
+public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties();
+public void setAdditionalProperty(java.lang.String, java.lang.Object);
+public void setAuthor(java.lang.String);
+public void setDescription(java.lang.String);
+public void setPublishedAt(java.lang.String);
+public void setTitle(java.lang.String);
+public void setUrl(java.lang.String);
+public void setUrlToImage(java.lang.String);
+public class com.main.java.models.Articles {
+public com.main.java.models.Articles();
+public java.lang.String getSortBy();
+public java.lang.String getSource();
+public java.lang.String getStatus();
+public java.util.List<com.main.java.models.Article> getArticles();
+public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties();
+public void setAdditionalProperty(java.lang.String, java.lang.Object);
+public void setArticles(java.util.List<com.main.java.models.Article>);
+public void setSortBy(java.lang.String);
+public void setSource(java.lang.String);
+public void setStatus(java.lang.String);
+public class com.main.java.models.Source {
+public com.main.java.models.Source();
+public com.main.java.models.UrlsToLogos getUrlsToLogos();
+public java.lang.String getCategory();
+public java.lang.String getCountry();
+public java.lang.String getDescription();
+public java.lang.String getId();
+public java.lang.String getLanguage();
+public java.lang.String getName();
+public java.lang.String getUrl();
+public java.util.List<java.lang.String> getSortBysAvailable();
+public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties();
+public void setAdditionalProperty(java.lang.String, java.lang.Object);
+public void setCategory(java.lang.String);
+public void setCountry(java.lang.String);
+public void setDescription(java.lang.String);
+public void setId(java.lang.String);
+public void setLanguage(java.lang.String);
+public void setName(java.lang.String);
+public void setSortBysAvailable(java.util.List<java.lang.String>);
+public void setUrl(java.lang.String);
+public void setUrlsToLogos(com.main.java.models.UrlsToLogos);
+public class com.main.java.models.Sources {
+public com.main.java.models.Sources();
+public java.lang.String getStatus();
+public java.util.List<com.main.java.models.Source> getSources();
+public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties();
+public void setAdditionalProperty(java.lang.String, java.lang.Object);
+public void setSources(java.util.List<com.main.java.models.Source>);
+public void setStatus(java.lang.String);
+public class com.main.java.models.UrlsToLogos {
+public com.main.java.models.UrlsToLogos();
+public java.lang.String getLarge();
+public java.lang.String getMedium();
+public java.lang.String getSmall();
+public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties();
+public void setAdditionalProperty(java.lang.String, java.lang.Object);
+public void setLarge(java.lang.String);
+public void setMedium(java.lang.String);
+public void setSmall(java.lang.String);
+public class com.main.java.startup.InitializeNewsWrapper extends com.main.java.base.Constants {
+public com.main.java.startup.InitializeNewsWrapper();
+public static com.main.java.models.Sources readAllSources();
+public static com.main.java.models.Sources readSourcesFromCategory(java.lang.String);
+public static void main(java.lang.String[]);
+public static void testWrapper();
+public class com.main.java.utils.JsonFactory {
+public com.main.java.utils.JsonFactory();
+public java.lang.String httpDeleteRequestJson(java.lang.String, java.lang.String[], java.lang.String[]);
+public java.lang.String httpGetRequestJson(java.lang.String, java.lang.String);
+public java.lang.String httpGetRequestJson(java.lang.String, java.lang.String[], java.lang.String[], java.lang.String);
+public java.lang.String httpPostRequestJson(java.lang.String, java.lang.String, java.lang.String[], java.lang.String[]);
+public java.lang.String httpPutRequestJson(java.lang.String, java.lang.String, java.lang.String[], java.lang.String[], java.lang.String);
+public java.util.List<org.json.JSONObject> getRequest(java.lang.String, java.lang.String[], java.lang.String[], java.lang.String);
+public java.util.List<org.json.JSONObject> getRequestForRest(java.lang.String, java.lang.String[], java.lang.String[], java.lang.String);
+public org.json.JSONObject postRequestHeader(java.lang.String, java.lang.String[], java.lang.String[]);
+public org.json.JSONObject postRequestJSON(java.lang.String, java.lang.String, java.lang.String[], java.lang.String[], java.lang.String);

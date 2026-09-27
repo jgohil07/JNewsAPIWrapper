@@ -16,9 +16,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "name",
     "description",
     "url",
-    "categoryDefault",
-    "languageDefault",
-    "countryDefault",
+    "category",
+    "language",
+    "country",
     "urlsToLogos",
     "sortBysAvailable"
 })
@@ -32,11 +32,11 @@ public class Source {
     private String description;
     @JsonProperty("url")
     private String url;
-    @JsonProperty("categoryDefault")
+    @JsonProperty("category")
     private String category;
-    @JsonProperty("languageDefault")
+    @JsonProperty("language")
     private String language;
-    @JsonProperty("countryDefault")
+    @JsonProperty("country")
     private String country;
     @JsonProperty("urlsToLogos")
     private UrlsToLogos urlsToLogos;
@@ -85,32 +85,32 @@ public class Source {
         this.url = url;
     }
 
-    @JsonProperty("categoryDefault")
+    @JsonProperty("category")
     public String getCategory() {
         return category;
     }
 
-    @JsonProperty("categoryDefault")
+    @JsonProperty("category")
     public void setCategory(String category) {
         this.category = category;
     }
 
-    @JsonProperty("languageDefault")
+    @JsonProperty("language")
     public String getLanguage() {
         return language;
     }
 
-    @JsonProperty("languageDefault")
+    @JsonProperty("language")
     public void setLanguage(String language) {
         this.language = language;
     }
 
-    @JsonProperty("countryDefault")
+    @JsonProperty("country")
     public String getCountry() {
         return country;
     }
 
-    @JsonProperty("countryDefault")
+    @JsonProperty("country")
     public void setCountry(String country) {
         this.country = country;
     }

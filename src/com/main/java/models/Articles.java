@@ -13,17 +13,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "status",
-    "sourceDefault",
-    "sortByDefault",
+    "source",
+    "sortBy",
     "articles"
 })
 public class Articles {
 
     @JsonProperty("status")
     private String status;
-    @JsonProperty("sourceDefault")
+    @JsonProperty("source")
     private String source;
-    @JsonProperty("sortByDefault")
+    @JsonProperty("sortBy")
     private String sortBy;
     @JsonProperty("articles")
     private List<Article> articles = null;
@@ -40,22 +40,22 @@ public class Articles {
         this.status = status;
     }
 
-    @JsonProperty("sourceDefault")
+    @JsonProperty("source")
     public String getSource() {
         return source;
     }
 
-    @JsonProperty("sourceDefault")
+    @JsonProperty("source")
     public void setSource(String source) {
         this.source = source;
     }
 
-    @JsonProperty("sortByDefault")
+    @JsonProperty("sortBy")
     public String getSortBy() {
         return sortBy;
     }
 
-    @JsonProperty("sortByDefault")
+    @JsonProperty("sortBy")
     public void setSortBy(String sortBy) {
         this.sortBy = sortBy;
     }
