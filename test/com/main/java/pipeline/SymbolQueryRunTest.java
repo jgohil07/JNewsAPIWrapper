@@ -34,7 +34,7 @@ class SymbolQueryRunTest {
 	void setUp() throws IOException {
 		server = new FixtureServer();
 		SourceRegistry empty = SourceRegistry.parse("""
-				{"categories":[{"id":"x","label":"X","group":"world","minHealthy":1,"required":true}],"sources":[]}"""
+				{"categories":[{"id":"x","label":"X","group":"x","minHealthy":1,"required":true}],"sources":[]}"""
 				.getBytes(StandardCharsets.UTF_8));
 		HttpFetcher http = HttpFetcher.builder().maxRetries(0).build();
 		Aggregator agg = new Aggregator(empty, cfg -> { throw new AssertionError("no registry sources expected"); },

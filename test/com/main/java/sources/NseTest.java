@@ -79,6 +79,24 @@ class NseTest {
 	}
 
 	@Test
+	void xbrlCopiesOfPdfFilingsAreSkippedButXbrlOnlyFilingsStay() throws IOException {
+		try (FixtureServer s = new FixtureServer()) {
+			s.on("/rss", Reply.xml("""
+					<rss><channel>
+					<item><title>Glottis Limited</title><link>https://nsearchives.nseindia.com/corporate/GLOTTIS_27092026.pdf</link><description>Glottis Limited has informed the Exchange about Closure of Trading Window |SUBJECT: Trading Window</description><pubDate>27-Sep-2026 14:30:00</pubDate></item>
+					<item><title>Glottis Limited</title><link>https://nsearchives.nseindia.com/corporate/xbrl/CLOSURE_TRADING_WINDOW_24556_WebXMLFile_20260927_143245748.xml</link><description>Glottis Limited has informed the Exchange about Closure of Trading Window |SUBJECT: Trading Window-XBRL</description><pubDate>27-Sep-2026 14:32:46</pubDate></item>
+					<item><title>KPI Green Energy Limited</title><link>https://nsearchives.nseindia.com/corporate/xbrl/REG30_Restructuring_19804_WebXMLFile_20260927_123914305.xml</link><description>KPI Green Energy Limited has informed the Exchange regarding Update-Acquisition |SUBJECT: Update-Acquisition (including agreement to acquire)</description><pubDate>27-Sep-2026 12:39:15</pubDate></item>
+					</channel></rss>"""));
+			NseAnnouncementsSource src = new NseAnnouncementsSource(config("nse-rss", s.url("/rss")), HttpFetcher.defaults(), () -> null);
+			List<RawItem> items = src.fetch();
+			assertEquals(2, items.size());
+			assertTrue(items.stream().anyMatch(i -> i.url().endsWith(".pdf")));
+			assertTrue(items.stream().anyMatch(i -> i.title().startsWith("KPI Green") && NseAnnouncementsSource.isXbrl(i.url())));
+			assertTrue(src.note().contains("1 XBRL copy(ies) of PDF filings skipped"));
+		}
+	}
+
+	@Test
 	void onlyNavNoticesMayLackALink() throws IOException {
 		// Review finding 8.
 		try (FixtureServer s = new FixtureServer()) {

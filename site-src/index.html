@@ -37,6 +37,7 @@
 <div class="layout">
   <nav class="rail" aria-label="Categories">
     <ul id="rail" class="rail-list"></ul>
+    <div id="subrail" class="subrail" aria-label="Sub-categories" hidden></div>
     <div class="rail-foot">
       <button id="health-link" class="rail-health" type="button">
         <span class="dot" id="health-dot" aria-hidden="true"></span><span id="health-summary">Source health</span>
@@ -66,6 +67,7 @@
 
     <section id="list-view" aria-live="polite">
       <ol id="list" class="list" tabindex="-1"></ol>
+      <button id="more" class="more" type="button" hidden>Show more</button>
       <p id="empty" class="empty" hidden></p>
     </section>
 
@@ -78,7 +80,7 @@
       <div id="health-cats" class="health-cats"></div>
       <div class="table-wrap">
         <table class="health-table">
-          <thead><tr><th scope="col">status</th><th scope="col">source</th><th scope="col">categories</th><th scope="col" class="num">items</th><th scope="col" class="num">newest</th><th scope="col">detail</th></tr></thead>
+          <thead><tr><th scope="col">status</th><th scope="col">source</th><th scope="col">categories</th><th scope="col" class="num">items</th><th scope="col" class="num">newest</th><th scope="col" class="num">oldest</th><th scope="col">detail</th></tr></thead>
           <tbody id="health-rows"></tbody>
         </table>
       </div>
@@ -105,7 +107,9 @@
     <dt><kbd>c</kbd></dt><dd>show other outlets covering it</dd>
     <dt><kbd>m</kbd></dt><dd>mark read / unread</dd>
     <dt><kbd>/</kbd></dt><dd>search</dd>
-    <dt><kbd>0</kbd>–<kbd>9</kbd></dt><dd>all / category</dd>
+    <dt><kbd>0</kbd>–<kbd>8</kbd></dt><dd>all / top-level category</dd>
+    <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>previous / next sub-category</dd>
+    <dt><kbd>e</kbd></dt><dd>expand / collapse sub-categories</dd>
     <dt><kbd>h</kbd></dt><dd>source health</dd>
     <dt><kbd>t</kbd> <kbd>d</kbd></dt><dd>theme / density</dd>
     <dt><kbd>Esc</kbd></dt><dd>clear search, close</dd>

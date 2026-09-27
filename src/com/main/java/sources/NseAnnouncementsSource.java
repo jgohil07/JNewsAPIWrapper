@@ -1,6 +1,9 @@
 package com.main.java.sources;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,8 +50,17 @@ public class NseAnnouncementsSource extends RssSource {
 		if (kept.size() < all.size()) {
 			notes.add((all.size() - kept.size()) + " link-less NAV notice(s) skipped");
 		}
+		// NSE often files the same disclosure twice: a PDF and an XBRL data copy ("Trading Window" and
+		// "Trading Window-XBRL"). The XBRL copy is dropped when its PDF sibling is in the feed; XBRL-only filings stay.
+		Set<String> documentKeys = kept.stream().filter(i -> hasLink(i) && !isXbrl(i.url()))
+				.map(i -> xbrlKey(i.title())).collect(Collectors.toSet());
+		List<RawItem> deduped = kept.stream()
+				.filter(i -> !(hasLink(i) && isXbrl(i.url()) && documentKeys.contains(xbrlKey(i.title())))).toList();
+		if (deduped.size() < kept.size()) {
+			notes.add((kept.size() - deduped.size()) + " XBRL copy(ies) of PDF filings skipped");
+		}
 		note = notes.isEmpty() ? null : String.join("; ", notes);
-		return kept;
+		return deduped;
 	}
 
 	@Override
@@ -70,6 +82,18 @@ public class NseAnnouncementsSource extends RssSource {
 		String link = e.link() == null || e.link().isBlank() ? null : e.link().strip();
 		return new RawItem(title, link, summary, parseDate(e.date()),
 				e.date(), null, symbols);
+	}
+
+	/** NSE's machine-readable XBRL data files (not meant for reading in a browser). */
+	public static boolean isXbrl(String url) {
+		String u = url.toLowerCase(Locale.ROOT);
+		return u.contains("/corporate/xbrl/") || u.endsWith(".xml");
+	}
+
+	/** Company and subject with the "-XBRL" marker removed, for matching a data copy to its PDF filing. */
+	static String xbrlKey(String title) {
+		String t = title == null ? "" : title.toLowerCase(Locale.ROOT);
+		return t.replaceAll("[\\s-]*xbrl\\b", "").replaceAll("[^a-z0-9]+", " ").strip();
 	}
 
 	private static boolean hasLink(RawItem i) {

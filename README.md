@@ -6,10 +6,20 @@
 JNewsAPIWrapper started as a Java wrapper for [News API](https://newsapi.org/). Version 2 keeps that wrapper (fixed)
 and adds:
 
-- **60+ sources with health checks and fallbacks**: public RSS feeds (Economic Times, Mint, Business Standard,
-  BusinessLine, NDTV Profit, The Hindu, Indian Express, BBC, The Guardian, Al Jazeera, NPR, DW, CNBC, Ars Technica,
-  The Verge, Hacker News, Lobsters, NASA, ScienceDaily), RBI press releases and notifications, and NSE corporate
-  announcements. Google News, News API v2, GNews and MarketAux serve as command-line fallbacks.
+- **80+ sources with health checks and fallbacks** in eight top-level categories:
+
+  | Category | Sources |
+  |---|---|
+  | India | Economic Times, Mint, The Hindu, Indian Express, NDTV Profit |
+  | Finance | India Markets, India Companies & Banking, India Economy & Policy (RBI included), NSE Filings, Global Markets & Business |
+  | Global | BBC, The Guardian, Al Jazeera, NPR, DW |
+  | Tech | Ars Technica, The Verge, Hacker News, Lobsters, and others |
+  | Science | BBC, The Guardian, NPR, NASA, ScienceDaily, The Hindu |
+  | Health | BBC, The Guardian, NPR, The Hindu, ScienceDaily, ETHealthworld |
+  | Entertainment | BBC, The Guardian, Variety, The Hollywood Reporter, The Hindu, ET Panache, NPR |
+  | Sports | BBC Sport, The Guardian, ESPNcricinfo, The Hindu, Mint |
+
+  Google News, News API v2, GNews and MarketAux serve as command-line fallbacks.
 - **A command-line India finance feed** for other programs, such as Thesis-Engine, with a versioned JSON schema:
   markets, companies & banking, economy & policy, and NSE filings, optionally for a single NSE symbol.
 - **An optional static website**: a minimal "wire" of headlines with a source-health view. It is built by the same
@@ -93,11 +103,13 @@ The page's keyboard shortcuts:
 | Key | Action |
 |---|---|
 | `j` / `k` | Next / previous headline |
-| `o` | Open the selected headline |
+| `o` | Open the selected headline (an NSE XBRL-only filing opens NSE's announcements page; its "XBRL" tag opens the data file) |
 | `c` | Show other outlets covering it |
 | `m` | Mark read or unread |
 | `/` | Search |
-| `0`–`9` | Switch category |
+| `0`–`8` | Switch top-level category (Finance's sub-categories stay collapsed until you expand them) |
+| `[` / `]` | Previous / next sub-category |
+| `e` | Expand or collapse sub-categories |
 | `h` | Source health |
 | `t` | Theme |
 | `d` | Density |

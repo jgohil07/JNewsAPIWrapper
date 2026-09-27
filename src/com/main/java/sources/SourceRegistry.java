@@ -37,6 +37,7 @@ public final class SourceRegistry {
 
 	private final Map<String, CategoryConfig> categories;
 	private final Map<String, SourceConfig> sources;
+	private final Map<String, List<String>> children;
 
 	private SourceRegistry(Document doc) {
 		Map<String, CategoryConfig> cats = new LinkedHashMap<>();
@@ -45,13 +46,60 @@ public final class SourceRegistry {
 			require(cats.put(c.id(), c) == null, "duplicate category " + c.id());
 			require(c.minHealthy() >= 0, "category " + c.id() + " has negative minHealthy");
 		}
+		// Hierarchy: `group` names the top-level category (itself for a top-level one). A top-level category with
+		// sub-categories is a parent: it has no sources and only groups its children.
+		Map<String, List<String>> kids = new LinkedHashMap<>();
+		for (CategoryConfig c : cats.values()) {
+			require(c.group() != null && cats.containsKey(c.group()), "category " + c.id() + " has unknown group " + c.group());
+			if (!c.group().equals(c.id())) {
+				CategoryConfig parent = cats.get(c.group());
+				require(parent.group().equals(parent.id()), "category " + c.id() + ": group " + c.group() + " is not top-level");
+				kids.computeIfAbsent(c.group(), k -> new ArrayList<>()).add(c.id());
+			}
+		}
+		Set<String> leaves = new java.util.LinkedHashSet<>(cats.keySet());
+		leaves.removeAll(kids.keySet());
 		Map<String, SourceConfig> srcs = new LinkedHashMap<>();
 		for (SourceConfig s : doc.sources()) {
-			validate(s, cats.keySet());
+			validate(s, leaves);
 			require(srcs.put(s.id(), s) == null, "duplicate source " + s.id());
 		}
 		this.categories = Collections.unmodifiableMap(cats);
 		this.sources = Collections.unmodifiableMap(srcs);
+		Map<String, List<String>> frozen = new LinkedHashMap<>();
+		kids.forEach((k, v) -> frozen.put(k, List.copyOf(v)));
+		this.children = Collections.unmodifiableMap(frozen);
+	}
+
+	/** Sub-categories of {@code id} in file order (empty for a leaf). */
+	public List<String> children(String id) {
+		category(id);
+		return children.getOrDefault(id, List.of());
+	}
+
+	public boolean isParent(String id) {
+		return children.containsKey(id);
+	}
+
+	/** Replaces parent categories by their sub-categories; unknown ids throw. */
+	public Set<String> expand(Set<String> ids) {
+		Set<String> out = new java.util.LinkedHashSet<>();
+		for (String id : ids) {
+			category(id);
+			if (isParent(id)) {
+				out.addAll(children.get(id));
+			} else {
+				out.add(id);
+			}
+		}
+		return out;
+	}
+
+	/** Leaf categories (those that hold sources), in file order. */
+	public Set<String> leaves() {
+		Set<String> out = new java.util.LinkedHashSet<>(categories.keySet());
+		out.removeAll(children.keySet());
+		return out;
 	}
 
 	/** Loads the bundled {@code /sources.json}. */
@@ -122,7 +170,7 @@ public final class SourceRegistry {
 		require(REGIONS.contains(s.region()), id + ": unknown region " + s.region());
 		require(!s.categories().isEmpty(), id + ": no categories");
 		for (String c : s.categories()) {
-			require(categoryIds.contains(c), id + ": unknown category " + c);
+			require(categoryIds.contains(c), id + ": unknown or parent category " + c + " (sources belong to leaf categories)");
 		}
 		require(s.maxAgeHours() > 0, id + ": maxAgeHours must be positive");
 		require(s.url() != null, id + ": url missing");

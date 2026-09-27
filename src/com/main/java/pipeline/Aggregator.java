@@ -86,10 +86,10 @@ public final class Aggregator {
 		this.clock = clock;
 	}
 
-	public Result run(Options options) {
-		for (String c : options.categories()) {
-			registry.category(c);
-		}
+	public Result run(Options requested) {
+		// Parent categories (e.g. finance) stand for their sub-categories.
+		Options options = new Options(registry.expand(requested.categories()), requested.since(), requested.publicOnly(),
+				requested.useFallback(), requested.topics(), requested.deadline());
 		List<SourceConfig> candidates = registry.sourcesFor(options.categories()).stream()
 				.filter(s -> !options.publicOnly() || s.isPublic())
 				.toList();

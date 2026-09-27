@@ -223,10 +223,16 @@ public final class JNewsCli implements Callable<Integer> {
 			}
 			if (!check) {
 				for (CategoryConfig c : reg.categories().values()) {
-					root.out.printf("%n[%s] %s  (group %s, needs %d healthy%s)%n", c.id(), c.label(), c.group(), c.minHealthy(),
+					boolean sub = !c.group().equals(c.id());
+					String indent = sub ? "    " : "";
+					if (reg.isParent(c.id())) {
+						root.out.printf("%n[%s] %s  (parent of %s)%n", c.id(), c.label(), String.join(", ", reg.children(c.id())));
+						continue;
+					}
+					root.out.printf("%n%s[%s] %s  (needs %d healthy%s)%n", indent, c.id(), c.label(), c.minHealthy(),
 							c.required() ? ", required" : "");
 					for (SourceConfig s : reg.sourcesFor(Set.of(c.id()))) {
-						root.out.printf("  %-26s %-9s %-7s %s%s%n", s.id(), s.type(), s.isPublic() ? "public" : "cli-only",
+						root.out.printf("%s  %-26s %-9s %-7s %s%s%n", indent, s.id(), s.type(), s.isPublic() ? "public" : "cli-only",
 								s.name(), s.fallback() ? "  [fallback" + (s.keyEnv() != null ? ", needs " + s.keyEnv() : "") + "]" : "");
 					}
 				}

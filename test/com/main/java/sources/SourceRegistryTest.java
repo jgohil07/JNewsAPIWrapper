@@ -19,7 +19,39 @@ class SourceRegistryTest {
 	@Test
 	void bundledRegistryIsValid() {
 		assertTrue(registry.sources().size() >= 40);
-		assertEquals(9, registry.categories().size());
+		assertEquals(13, registry.categories().size());
+	}
+
+	@Test
+	void financeIsAParentOfTheFinanceSections() {
+		assertTrue(registry.isParent("finance"));
+		assertEquals(java.util.List.of("india-markets", "india-business", "economy", "filings", "business"), registry.children("finance"));
+		assertEquals(Set.of("india-markets", "india-business", "economy", "filings", "business", "tech"),
+				registry.expand(Set.of("finance", "tech")));
+		assertTrue(registry.sourcesFor(Set.of("finance")).isEmpty(), "a parent holds no sources itself");
+		assertFalse(registry.leaves().contains("finance"));
+		for (String top : new String[] { "india", "world", "tech", "science", "health", "entertainment", "sports" }) {
+			assertEquals(top, registry.category(top).group());
+			assertFalse(registry.isParent(top));
+		}
+	}
+
+	@Test
+	void hierarchyMistakesAreRejected() {
+		String cats = """
+				{"categories":[{"id":"p","label":"P","group":"p","minHealthy":0,"required":false},
+				 {"id":"c","label":"C","group":"p","minHealthy":1,"required":true},
+				 {"id":"g","label":"G","group":"c","minHealthy":1,"required":true}],"sources":[]}""";
+		assertThrows(NewsException.class, () -> SourceRegistry.parse(cats.getBytes(StandardCharsets.UTF_8)),
+				"a sub-category of a sub-category");
+		String sourceOnParent = """
+				{"categories":[{"id":"p","label":"P","group":"p","minHealthy":0,"required":false},
+				 {"id":"c","label":"C","group":"p","minHealthy":1,"required":true}],
+				 "sources":[{"id":"a","name":"A","type":"rss","url":"https://a.example/f","homepage":null,"region":"world","kind":"news",
+				 "language":"en","categories":["p"],"topics":[],"maxAgeHours":24,"public":true,"agent":"default",
+				 "defaultZone":null,"datePattern":null,"fallback":false,"priority":1,"keyEnv":null}]}""";
+		assertThrows(NewsException.class, () -> SourceRegistry.parse(sourceOnParent.getBytes(StandardCharsets.UTF_8)),
+				"sources belong to leaf categories");
 	}
 
 	@Test
@@ -50,7 +82,7 @@ class SourceRegistryTest {
 	@Test
 	void invalidConfigurationIsRejected() {
 		String base = """
-				{"categories":[{"id":"x","label":"X","group":"world","minHealthy":1,"required":true}],
+				{"categories":[{"id":"x","label":"X","group":"x","minHealthy":1,"required":true}],
 				 "sources":[{"id":"a","name":"A","type":"rss","url":"%s","homepage":null,"region":"world","kind":"news",
 				 "language":"en","categories":["x"],"topics":[],"maxAgeHours":24,"public":true,"agent":"default",
 				 "defaultZone":null,"datePattern":null,"fallback":false,"priority":1,"keyEnv":null}]}""";

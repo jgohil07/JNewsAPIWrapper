@@ -78,7 +78,13 @@ public final class SiteBuilder {
 		m.put("very_stale_after_hours", 24);
 		List<Map<String, Object>> cats = new ArrayList<>();
 		for (CategoryConfig c : registry.categories().values()) {
-			cats.add(Map.of("id", c.id(), "label", c.label(), "group", c.group()));
+			Map<String, Object> cat = new LinkedHashMap<>();
+			cat.put("id", c.id());
+			cat.put("label", c.label());
+			cat.put("group", c.group());
+			cat.put("parent", c.group().equals(c.id()) ? null : c.group());
+			cat.put("children", registry.children(c.id()));
+			cats.add(cat);
 		}
 		m.put("categories", cats);
 		m.put("topics", classifier.labels());

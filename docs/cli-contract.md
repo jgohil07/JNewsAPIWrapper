@@ -19,7 +19,10 @@ optional keyed fallbacks need settings: `NEWSAPI_KEY`, `GNEWS_KEY`, `MARKETAUX_K
 |---|---|
 | `jnews india [--since 2d] [--topic ipo,rbi,...]` | India finance: categories `india-markets`, `india-business`, `economy`, `filings` |
 | `jnews india --symbol MBAPL [--since 7d]` | One NSE symbol: NSE announcements (`match: exact`) + headlines naming the company (`match: name`) |
-| `jnews fetch [--category a,b] [--since 24h] [--public-only]` | Any categories (`jnews sources` lists them) |
+| `jnews fetch [--category a,b] [--since 24h] [--public-only]` | Any categories (`jnews sources` lists them). A parent category stands for its sub-categories: `--category finance` = `india-markets,india-business,economy,filings,business` |
+
+Changelog within schema v1: 2026-09-27 (iteration 2) `sources[].oldest_at` added; `categories[].group` now holds the
+top-level category id (was `india-finance` / `india` / `world`).
 
 Common options: `--format json|jsonl|table` (default `json`), `--since` (`90m`, `24h`, `2d`, `1w`; 1 minute to 31 days;
 default 2 days for `india`, everything for `fetch`), `--limit N`, `--strict`, `--allow-partial`, `--timeout 1m`,
@@ -81,6 +84,13 @@ One JSON document matching [`schema/news-envelope.v1.json`](../schema/news-envel
 
 `--format jsonl` writes one item object per line and nothing else (the health summary stays on stderr).
 
+## Categories
+
+Top level: `india`, `finance` (parent), `world` (Global), `tech`, `science`, `health`, `entertainment`, `sports`.
+`finance` has sub-categories `india-markets`, `india-business`, `economy`, `filings` and `business`, and no sources of its
+own. Items and `categories[]` statuses always use sub-category (leaf) ids; `categories[].group` is the top-level id
+(`finance` for the finance sections, otherwise the category itself).
+
 ## What the fields guarantee
 
 - **Items are validated**: non-empty title, absolute http(s) URL, a publication time that was read unambiguously
@@ -93,6 +103,8 @@ One JSON document matching [`schema/news-envelope.v1.json`](../schema/news-envel
   company-name match in NSE's equity list); `name` = the headline or summary names the company (whole phrase, case as
   registered or all capitals, not directly preceded or followed by another capitalised word that would make it a
   different name, e.g. "State Bank of India", "Arvind Kejriwal"). Treat `name` as lower confidence.
+- **Filing URLs**: a filing's `url` is the exchange document: usually a PDF, sometimes an XBRL data file (`.xml`,
+  for disclosures NSE publishes only as XBRL). XBRL copies of a PDF filing in the same feed are skipped as duplicates.
 - **`--symbol`** needs NSE's own announcements: if they cannot be read, the run fails (exit 1) instead of returning
   headlines alone. A Google News search with no results is a valid, empty answer.
 - **Duplicates** are merged: same canonical URL, or the same headline from a *different* source within 36 hours of

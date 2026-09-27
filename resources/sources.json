@@ -9,43 +9,50 @@
    "required": true
   },
   {
+   "id": "finance",
+   "label": "Finance",
+   "group": "finance",
+   "minHealthy": 0,
+   "required": false
+  },
+  {
    "id": "india-markets",
-   "label": "Markets",
-   "group": "india-finance",
+   "label": "India Markets",
+   "group": "finance",
    "minHealthy": 2,
    "required": true
   },
   {
    "id": "india-business",
-   "label": "Companies & Banking",
-   "group": "india-finance",
+   "label": "India Companies & Banking",
+   "group": "finance",
    "minHealthy": 2,
    "required": true
   },
   {
    "id": "economy",
-   "label": "Economy & Policy",
-   "group": "india-finance",
+   "label": "India Economy & Policy",
+   "group": "finance",
    "minHealthy": 2,
    "required": true
   },
   {
    "id": "filings",
    "label": "NSE Filings",
-   "group": "india-finance",
+   "group": "finance",
    "minHealthy": 1,
    "required": false
   },
   {
-   "id": "world",
-   "label": "World",
-   "group": "world",
+   "id": "business",
+   "label": "Global Markets & Business",
+   "group": "finance",
    "minHealthy": 2,
    "required": true
   },
   {
-   "id": "business",
-   "label": "Global Business",
+   "id": "world",
+   "label": "Global",
    "group": "world",
    "minHealthy": 2,
    "required": true
@@ -53,14 +60,35 @@
   {
    "id": "tech",
    "label": "Tech",
-   "group": "world",
+   "group": "tech",
    "minHealthy": 2,
    "required": true
   },
   {
    "id": "science",
    "label": "Science",
-   "group": "world",
+   "group": "science",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "health",
+   "label": "Health",
+   "group": "health",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "entertainment",
+   "label": "Entertainment",
+   "group": "entertainment",
+   "minHealthy": 2,
+   "required": true
+  },
+  {
+   "id": "sports",
+   "label": "Sports",
+   "group": "sports",
    "minHealthy": 2,
    "required": true
   }
@@ -842,7 +870,7 @@
    "topics": [],
    "maxAgeHours": 72,
    "public": true,
-   "agent": "default",
+   "agent": "browser",
    "defaultZone": "Asia/Kolkata",
    "datePattern": null,
    "fallback": false,
@@ -864,7 +892,7 @@
    "topics": [],
    "maxAgeHours": 72,
    "public": true,
-   "agent": "default",
+   "agent": "browser",
    "defaultZone": "Asia/Kolkata",
    "datePattern": null,
    "fallback": false,
@@ -1375,6 +1403,448 @@
    "maxAgeHours": 72,
    "public": true,
    "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 20,
+   "keyEnv": null
+  },
+  {
+   "id": "bbc-health",
+   "name": "BBC News · Health",
+   "type": "rss",
+   "url": "https://feeds.bbci.co.uk/news/health/rss.xml",
+   "homepage": "https://www.bbc.co.uk/news/health",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "health"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "guardian-health",
+   "name": "The Guardian · Health",
+   "type": "rss",
+   "url": "https://www.theguardian.com/society/health/rss",
+   "homepage": "https://www.theguardian.com/society/health",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "health"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "npr-health",
+   "name": "NPR · Health",
+   "type": "rss",
+   "url": "https://feeds.npr.org/1128/rss.xml",
+   "homepage": "https://www.npr.org/sections/health/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "health"
+   ],
+   "topics": [],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "hindu-health",
+   "name": "The Hindu · Health",
+   "type": "rss",
+   "url": "https://www.thehindu.com/sci-tech/health/feeder/default.rss",
+   "homepage": "https://www.thehindu.com/sci-tech/health/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "health"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "sciencedaily-health",
+   "name": "ScienceDaily · Health & Medicine",
+   "type": "rss",
+   "url": "https://www.sciencedaily.com/rss/health_medicine.xml",
+   "homepage": "https://www.sciencedaily.com/news/health_medicine/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "health"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "et-health",
+   "name": "ETHealthworld · Top Stories",
+   "type": "rss",
+   "url": "https://health.economictimes.indiatimes.com/rss/topstories",
+   "homepage": "https://health.economictimes.indiatimes.com/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "health"
+   ],
+   "topics": [],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 20,
+   "keyEnv": null
+  },
+  {
+   "id": "bbc-entertainment",
+   "name": "BBC News · Entertainment & Arts",
+   "type": "rss",
+   "url": "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",
+   "homepage": "https://www.bbc.co.uk/news/entertainment_and_arts",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 96,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "guardian-culture",
+   "name": "The Guardian · Culture",
+   "type": "rss",
+   "url": "https://www.theguardian.com/uk/culture/rss",
+   "homepage": "https://www.theguardian.com/uk/culture",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "variety",
+   "name": "Variety",
+   "type": "rss",
+   "url": "https://variety.com/feed/",
+   "homepage": "https://variety.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "hollywood-reporter",
+   "name": "The Hollywood Reporter",
+   "type": "rss",
+   "url": "https://www.hollywoodreporter.com/feed/",
+   "homepage": "https://www.hollywoodreporter.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "hindu-entertainment",
+   "name": "The Hindu · Entertainment",
+   "type": "rss",
+   "url": "https://www.thehindu.com/entertainment/feeder/default.rss",
+   "homepage": "https://www.thehindu.com/entertainment/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "et-panache",
+   "name": "Economic Times · Panache",
+   "type": "rss",
+   "url": "https://economictimes.indiatimes.com/magazines/panache/rssfeeds/32897557.cms",
+   "homepage": "https://economictimes.indiatimes.com/magazines/panache",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 20,
+   "keyEnv": null
+  },
+  {
+   "id": "npr-arts",
+   "name": "NPR · Arts & Life",
+   "type": "rss",
+   "url": "https://feeds.npr.org/1008/rss.xml",
+   "homepage": "https://www.npr.org/sections/arts/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 120,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 22,
+   "keyEnv": null
+  },
+  {
+   "id": "ie-entertainment",
+   "name": "Indian Express · Entertainment",
+   "type": "rss",
+   "url": "https://indianexpress.com/section/entertainment/feed/",
+   "homepage": "https://indianexpress.com/section/entertainment/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "entertainment"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "browser",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 24,
+   "keyEnv": null
+  },
+  {
+   "id": "bbc-sport",
+   "name": "BBC Sport",
+   "type": "rss",
+   "url": "https://feeds.bbci.co.uk/sport/rss.xml",
+   "homepage": "https://www.bbc.co.uk/sport",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "sports"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 10,
+   "keyEnv": null
+  },
+  {
+   "id": "guardian-sport",
+   "name": "The Guardian · Sport",
+   "type": "rss",
+   "url": "https://www.theguardian.com/uk/sport/rss",
+   "homepage": "https://www.theguardian.com/uk/sport",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "sports"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 12,
+   "keyEnv": null
+  },
+  {
+   "id": "cricinfo",
+   "name": "ESPNcricinfo",
+   "type": "rss",
+   "url": "https://www.cricinfo.com/rss/content/story/feeds/0.xml",
+   "homepage": "https://www.espncricinfo.com/",
+   "region": "world",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "sports"
+   ],
+   "topics": [
+    "cricket"
+   ],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": null,
+   "datePattern": null,
+   "fallback": false,
+   "priority": 14,
+   "keyEnv": null
+  },
+  {
+   "id": "hindu-sport",
+   "name": "The Hindu · Sport",
+   "type": "rss",
+   "url": "https://www.thehindu.com/sport/feeder/default.rss",
+   "homepage": "https://www.thehindu.com/sport/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "sports"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 16,
+   "keyEnv": null
+  },
+  {
+   "id": "mint-sports",
+   "name": "Mint · Sports",
+   "type": "rss",
+   "url": "https://www.livemint.com/rss/sports",
+   "homepage": "https://www.livemint.com/sports",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "sports"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "default",
+   "defaultZone": "Asia/Kolkata",
+   "datePattern": null,
+   "fallback": false,
+   "priority": 18,
+   "keyEnv": null
+  },
+  {
+   "id": "ie-sports",
+   "name": "Indian Express · Sports",
+   "type": "rss",
+   "url": "https://indianexpress.com/section/sports/feed/",
+   "homepage": "https://indianexpress.com/section/sports/",
+   "region": "in",
+   "kind": "news",
+   "language": "en",
+   "categories": [
+    "sports"
+   ],
+   "topics": [],
+   "maxAgeHours": 72,
+   "public": true,
+   "agent": "browser",
    "defaultZone": "Asia/Kolkata",
    "datePattern": null,
    "fallback": false,

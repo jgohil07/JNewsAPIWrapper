@@ -54,7 +54,18 @@ class SiteBuilderTest {
 		}
 		JsonNode meta = new ObjectMapper().readTree(out.resolve("data/site.json").toFile());
 		assertEquals(6, meta.get("refresh_hours").asInt());
-		assertEquals(9, meta.get("categories").size());
+		assertEquals(13, meta.get("categories").size());
+		JsonNode finance = null;
+		for (JsonNode c : meta.get("categories")) {
+			if (c.get("id").asText().equals("finance")) {
+				finance = c;
+			}
+			if (c.get("id").asText().equals("india-markets")) {
+				assertEquals("finance", c.get("parent").asText());
+			}
+		}
+		assertEquals(5, finance.get("children").size());
+		assertTrue(finance.get("parent").isNull());
 		assertEquals("IPOs", meta.get("topics").get("ipo").asText());
 	}
 

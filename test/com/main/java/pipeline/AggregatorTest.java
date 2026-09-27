@@ -30,8 +30,8 @@ class AggregatorTest {
 
 	static final String REGISTRY = """
 			{"categories":[
-			  {"id":"mk","label":"Markets","group":"india-finance","minHealthy":2,"required":true},
-			  {"id":"fl","label":"Filings","group":"india-finance","minHealthy":1,"required":false}],
+			  {"id":"mk","label":"Markets","group":"mk","minHealthy":2,"required":true},
+			  {"id":"fl","label":"Filings","group":"fl","minHealthy":1,"required":false}],
 			 "sources":[
 			  %s,
 			  %s,
@@ -188,6 +188,23 @@ class AggregatorTest {
 		behaviour.put("b", () -> List.of(RawItem.of(title, "https://b.example/x", null, NOW.minus(Duration.ofHours(2)), "t")));
 		Aggregator.Result r = aggregator().run(new Aggregator.Options(Set.of("mk"), Duration.ofHours(24), true, false, Set.of(), null));
 		assertTrue(r.items().stream().anyMatch(i -> i.title().equals(title)), "story must survive the window");
+	}
+
+	@Test
+	void parentCategoryStandsForItsChildren() {
+		SourceRegistry tree = SourceRegistry.parse("""
+				{"categories":[{"id":"fin","label":"Finance","group":"fin","minHealthy":0,"required":false},
+				  {"id":"mk","label":"Markets","group":"fin","minHealthy":1,"required":true},
+				  {"id":"fl","label":"Filings","group":"fin","minHealthy":1,"required":false}],
+				 "sources":[%s,%s]}""".formatted(src("a", "mk", false, true, 10), src("n", "fl", false, true, 5))
+				.getBytes(StandardCharsets.UTF_8));
+		Aggregator agg = new Aggregator(tree, cfg -> new Stub(cfg, () -> items(cfg.id(), 1), null), Classifier.of(List.of()),
+				Clock.fixed(NOW, ZoneOffset.UTC));
+		Aggregator.Result r = agg.run(opts(true, false, "fin"));
+		assertEquals(Aggregator.Status.OK, r.status());
+		assertEquals(List.of("mk", "fl"), r.categories().stream().map(Aggregator.CategoryStatus::id).toList(),
+				"statuses are per sub-category");
+		assertEquals(2, r.items().size());
 	}
 
 	@Test
