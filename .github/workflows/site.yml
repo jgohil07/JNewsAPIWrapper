@@ -5,7 +5,10 @@ name: News site
 
 on:
   schedule:
-    - cron: '23 */6 * * *'   # minute 23 avoids the top-of-hour scheduling backlog
+    - cron: '23 */6 * * *'     # main refresh; minute 23 avoids the top-of-hour scheduling backlog
+    # Catch-up 3.5 h after each main slot: GitHub may delay or drop scheduled runs under load (the 12:23 UTC run
+    # on 2026-09-27 never started). It rebuilds only when the live data is older than 5 h.
+    - cron: '53 3-23/6 * * *'
   workflow_dispatch:
   push:
     branches: [master]
@@ -25,21 +28,45 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    outputs:
+      due: ${{ steps.due.outputs.due }}
     steps:
+      - name: Is a refresh due?
+        id: due
+        env:
+          CATCH_UP: ${{ github.event.schedule == '53 3-23/6 * * *' }}
+          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data/site.json
+        run: |
+          due=true
+          if [ "$CATCH_UP" = "true" ]; then
+            # Fail open: if the live data cannot be read, rebuild.
+            if age=$(curl -fsS --max-time 20 "$SITE_URL" | python3 -c 'import json,re,sys,datetime as d; g=re.sub(r"\.\d+","",json.load(sys.stdin)["generated_at"]).replace("Z","+00:00"); print(int((d.datetime.now(d.timezone.utc)-d.datetime.fromisoformat(g)).total_seconds()//3600))'); then
+              echo "Live data is ${age} h old."
+              if [ "$age" -lt 5 ]; then due=false; echo "Main refresh ran; nothing to do."; fi
+            else
+              echo "::warning title=Catch-up::Could not read the live site data; rebuilding."
+            fi
+          fi
+          echo "due=$due" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.due.outputs.due == 'true'
         with:
           persist-credentials: false
 
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        if: steps.due.outputs.due == 'true'
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
 
       - name: Build and test
+        if: steps.due.outputs.due == 'true'
         run: ./mvnw -B -ntp verify
 
       - name: Fetch news and build the site
+        if: steps.due.outputs.due == 'true'
         run: |
           set +e
           java -jar target/jnews.jar site build --out _site --refresh-hours 6
@@ -53,13 +80,16 @@ jobs:
           fi
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        if: steps.due.outputs.due == 'true'
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        if: steps.due.outputs.due == 'true'
         with:
           path: _site
 
   deploy:
     needs: build
+    if: needs.build.outputs.due == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
