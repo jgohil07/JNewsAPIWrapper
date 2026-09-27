@@ -856,50 +856,6 @@
    "keyEnv": null
   },
   {
-   "id": "ie-india",
-   "name": "Indian Express · India",
-   "type": "rss",
-   "url": "https://indianexpress.com/section/india/feed/",
-   "homepage": "https://indianexpress.com/section/india/",
-   "region": "in",
-   "kind": "news",
-   "language": "en",
-   "categories": [
-    "india"
-   ],
-   "topics": [],
-   "maxAgeHours": 72,
-   "public": true,
-   "agent": "browser",
-   "defaultZone": "Asia/Kolkata",
-   "datePattern": null,
-   "fallback": false,
-   "priority": 16,
-   "keyEnv": null
-  },
-  {
-   "id": "ie-business",
-   "name": "Indian Express · Business",
-   "type": "rss",
-   "url": "https://indianexpress.com/section/business/feed/",
-   "homepage": "https://indianexpress.com/section/business/",
-   "region": "in",
-   "kind": "news",
-   "language": "en",
-   "categories": [
-    "india-business"
-   ],
-   "topics": [],
-   "maxAgeHours": 72,
-   "public": true,
-   "agent": "browser",
-   "defaultZone": "Asia/Kolkata",
-   "datePattern": null,
-   "fallback": false,
-   "priority": 22,
-   "keyEnv": null
-  },
-  {
    "id": "bbc-world",
    "name": "BBC News · World",
    "type": "rss",
@@ -1696,28 +1652,6 @@
    "keyEnv": null
   },
   {
-   "id": "ie-entertainment",
-   "name": "Indian Express · Entertainment",
-   "type": "rss",
-   "url": "https://indianexpress.com/section/entertainment/feed/",
-   "homepage": "https://indianexpress.com/section/entertainment/",
-   "region": "in",
-   "kind": "news",
-   "language": "en",
-   "categories": [
-    "entertainment"
-   ],
-   "topics": [],
-   "maxAgeHours": 72,
-   "public": true,
-   "agent": "browser",
-   "defaultZone": "Asia/Kolkata",
-   "datePattern": null,
-   "fallback": false,
-   "priority": 24,
-   "keyEnv": null
-  },
-  {
    "id": "bbc-sport",
    "name": "BBC Sport",
    "type": "rss",
@@ -1827,28 +1761,6 @@
    "datePattern": null,
    "fallback": false,
    "priority": 18,
-   "keyEnv": null
-  },
-  {
-   "id": "ie-sports",
-   "name": "Indian Express · Sports",
-   "type": "rss",
-   "url": "https://indianexpress.com/section/sports/feed/",
-   "homepage": "https://indianexpress.com/section/sports/",
-   "region": "in",
-   "kind": "news",
-   "language": "en",
-   "categories": [
-    "sports"
-   ],
-   "topics": [],
-   "maxAgeHours": 72,
-   "public": true,
-   "agent": "browser",
-   "defaultZone": "Asia/Kolkata",
-   "datePattern": null,
-   "fallback": false,
-   "priority": 20,
    "keyEnv": null
   },
   {
