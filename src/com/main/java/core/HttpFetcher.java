@@ -13,6 +13,11 @@ import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Small, strict HTTP GET/POST client on {@link java.net.http.HttpClient}.
@@ -39,6 +44,13 @@ public final class HttpFetcher {
 			+ "(KHTML, like Gecko) Chrome/128 Safari/537.36 JNewsAPIWrapper/2.0";
 
 	private static final HttpFetcher DEFAULT = builder().build();
+
+	/** Interrupts body reads that outlive the deadline (the client's own timeout covers headers only). */
+	private static final ScheduledExecutorService WATCHDOG = Executors.newSingleThreadScheduledExecutor(r -> {
+		Thread t = new Thread(r, "jnews-http-watchdog");
+		t.setDaemon(true);
+		return t;
+	});
 
 	/** A response whose status the caller has not yet judged. */
 	public record Response(int status, byte[] body, HttpHeaders headers, URI uri) {
@@ -140,24 +152,26 @@ public final class HttpFetcher {
 				: HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8);
 		HttpRequest request = rb.method(method, publisher).build();
 
+		// Only idempotent requests are retried; a repeated POST/PUT/DELETE could duplicate side effects.
+		int retries = method.equals("GET") || method.equals("HEAD") ? maxRetries : 0;
 		int attempt = 0;
 		while (true) {
 			try {
 				HttpResponse<InputStream> resp = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 				byte[] bytes = readCapped(resp.body(), uri);
 				Response r = new Response(resp.statusCode(), bytes, resp.headers(), resp.uri());
-				if (attempt < maxRetries && isRetryable(r.status())) {
+				if (attempt < retries && isRetryable(r.status())) {
 					backoff(attempt++, r.headers().firstValue("retry-after"));
 					continue;
 				}
 				return r;
 			} catch (IOException e) {
-				if (attempt < maxRetries) {
+				if (attempt < retries) {
 					backoff(attempt++, Optional.empty());
 					continue;
 				}
 				throw new FetchException(method + " " + redact(uri) + " failed: " + e.getClass().getSimpleName()
-						+ (e.getMessage() == null ? "" : " (" + e.getMessage() + ")"), e);
+						+ (e.getMessage() == null ? "" : " (" + scrub(e.getMessage(), uri) + ")"), e);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				throw new FetchException(method + " " + redact(uri) + " interrupted", e);
@@ -189,6 +203,19 @@ public final class HttpFetcher {
 		return sb.toString();
 	}
 
+	/** Removes the request's query string (which may carry an API key) from a transport error message. */
+	static String scrub(String message, URI uri) {
+		String q = uri.getRawQuery();
+		String s = message;
+		if (q != null && !q.isEmpty()) {
+			s = s.replace(q, "…");
+			if (uri.getQuery() != null) {
+				s = s.replace(uri.getQuery(), "…");
+			}
+		}
+		return s;
+	}
+
 	private static void checkScheme(URI uri) {
 		String scheme = uri == null ? null : uri.getScheme();
 		if (scheme == null || !(scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")) || uri.getHost() == null) {
@@ -201,12 +228,28 @@ public final class HttpFetcher {
 	}
 
 	private byte[] readCapped(InputStream in, URI uri) throws IOException {
+		Thread reader = Thread.currentThread();
+		AtomicBoolean timedOut = new AtomicBoolean();
+		ScheduledFuture<?> dog = WATCHDOG.schedule(() -> {
+			timedOut.set(true);
+			reader.interrupt();
+		}, requestTimeout.toMillis(), TimeUnit.MILLISECONDS);
 		try (in) {
 			byte[] bytes = in.readNBytes((int) Math.min(Integer.MAX_VALUE - 8, maxBodyBytes + 1));
 			if (bytes.length > maxBodyBytes) {
 				throw new FetchException("Response from " + redact(uri) + " exceeds " + maxBodyBytes + " bytes", -1);
 			}
 			return bytes;
+		} catch (IOException e) {
+			if (timedOut.get()) {
+				throw new FetchException("Body of " + redact(uri) + " not received within " + requestTimeout.toSeconds() + " s", -1);
+			}
+			throw e;
+		} finally {
+			dog.cancel(false);
+			if (timedOut.get()) {
+				Thread.interrupted(); // clear the watchdog's interrupt; the timeout is reported above
+			}
 		}
 	}
 

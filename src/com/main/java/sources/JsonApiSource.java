@@ -61,11 +61,20 @@ public abstract class JsonApiSource implements NewsSource {
 			throw new NewsException(config.id() + ": response is not JSON");
 		}
 		if (!r.isSuccess()) {
-			String msg = firstText(root, "message", "error", "errors");
+			String msg = redactKey(firstText(root, "message", "error", "errors"));
 			throw new NewsException(config.id() + ": HTTP " + r.status()
 					+ (msg == null ? "" : " (" + msg.substring(0, Math.min(200, msg.length())) + ")"));
 		}
 		return root;
+	}
+
+	/** APIs sometimes quote the rejected key in their error text; never pass it on. */
+	protected String redactKey(String message) {
+		if (message == null || config.keyEnv() == null) {
+			return message;
+		}
+		String key = Env.get(config.keyEnv()).orElse(null);
+		return key == null ? message : message.replace(key, "***");
 	}
 
 	protected List<RawItem> mapArray(JsonNode array, String what) {

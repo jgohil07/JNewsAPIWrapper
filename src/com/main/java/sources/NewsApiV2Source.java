@@ -24,7 +24,7 @@ public class NewsApiV2Source extends JsonApiSource {
 		JsonNode root = getJson(URI.create(config.url()), Map.of("X-Api-Key", key(), "Accept", "application/json"));
 		String status = text(root, "status");
 		if (!"ok".equals(status)) {
-			throw new NewsException(config.id() + ": " + text(root, "code") + ": " + text(root, "message"));
+			throw new NewsException(config.id() + ": " + text(root, "code") + ": " + redactKey(text(root, "message")));
 		}
 		return mapArray(root.get("articles"), "articles");
 	}

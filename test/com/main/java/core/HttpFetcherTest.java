@@ -82,6 +82,54 @@ class HttpFetcherTest {
 	}
 
 	@Test
+	void slowDripBodyTimesOut() throws Exception {
+		com.sun.net.httpserver.HttpServer slow = com.sun.net.httpserver.HttpServer.create(
+				new java.net.InetSocketAddress(java.net.InetAddress.getLoopbackAddress(), 0), 0);
+		slow.createContext("/", ex -> {
+			ex.sendResponseHeaders(200, 0);
+			try (var out = ex.getResponseBody()) {
+				out.write("<rss>".getBytes());
+				out.flush();
+				Thread.sleep(10_000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		});
+		slow.start();
+		try {
+			HttpFetcher f = HttpFetcher.builder().requestTimeout(Duration.ofSeconds(1)).maxRetries(0).build();
+			long t0 = System.nanoTime();
+			FetchException e = assertThrows(FetchException.class,
+					() -> f.get(URI.create("http://127.0.0.1:" + slow.getAddress().getPort() + "/"), Map.of()));
+			assertTrue(e.getMessage().contains("not received within"), e.getMessage());
+			assertTrue(Duration.ofNanos(System.nanoTime() - t0).toSeconds() < 5);
+			assertFalse(Thread.currentThread().isInterrupted(), "watchdog interrupt must be cleared");
+		} finally {
+			slow.stop(0);
+		}
+	}
+
+	@Test
+	void postIsNeverRetried() {
+		server.on("/p", Reply.of(503, "text/plain", "busy"));
+		HttpFetcher.Response r = fetcher.fetch("POST", URI.create(server.url("/p")), Map.of(), "{}");
+		assertEquals(503, r.status());
+		assertEquals(1, server.requests().size());
+		assertTrue(sleeps.isEmpty());
+	}
+
+	@Test
+	void transportErrorsNeverCarryTheQueryString() {
+		URI uri = URI.create("https://h.example/p?apikey=SECRET123&x=1");
+		String scrubbed = HttpFetcher.scrub("failed to connect to https://h.example/p?apikey=SECRET123&x=1", uri);
+		assertFalse(scrubbed.contains("SECRET123"), scrubbed);
+		HttpFetcher closedPort = HttpFetcher.builder().maxRetries(0).connectTimeout(Duration.ofSeconds(2)).build();
+		FetchException e = assertThrows(FetchException.class,
+				() -> closedPort.get(URI.create("http://127.0.0.1:1/p?apikey=SECRET123"), Map.of()));
+		assertFalse(e.getMessage().contains("SECRET123"), e.getMessage());
+	}
+
+	@Test
 	void redactDropsQueryAndUserInfo() {
 		assertEquals("https://h.example/p?…", HttpFetcher.redact(URI.create("https://u:pw@h.example/p?apiKey=abc")));
 	}
