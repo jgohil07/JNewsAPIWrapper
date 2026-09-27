@@ -1,5 +1,22 @@
 {
  "_comment": "Keyword rules that add topics (by: rule). Patterns are case-insensitive Java regexes joined with OR; a rule applies only to items in its appliesTo categories. Feed-section topics (by: feed) come from sources.json.",
+ "labels": {
+  "markets": "Markets",
+  "stocks": "Stocks",
+  "ipo": "IPOs",
+  "commodities": "Commodities",
+  "forex": "Rupee & Forex",
+  "bonds": "Bonds",
+  "companies": "Companies",
+  "banking": "Banking",
+  "funds": "Mutual Funds",
+  "personal-finance": "Personal Finance",
+  "economy": "Economy",
+  "policy": "Policy",
+  "rbi": "RBI",
+  "filings": "Filings",
+  "space": "Space"
+ },
  "rules": [
   {
    "topic": "markets",

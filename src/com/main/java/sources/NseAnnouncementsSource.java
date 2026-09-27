@@ -65,7 +65,8 @@ public class NseAnnouncementsSource extends RssSource {
 		if (master != null && company != null) {
 			symbols = master.symbolForExactName(company).map(s -> List.of(new SymbolTag(s, "exact"))).orElse(List.of());
 		}
-		return new RawItem(title, e.link() == null ? null : e.link().strip(), e.description(), parseDate(e.date()),
+		String summary = e.description() == null ? null : SUBJECT.matcher(e.description()).replaceFirst("").strip();
+		return new RawItem(title, e.link() == null ? null : e.link().strip(), summary, parseDate(e.date()),
 				e.date(), null, symbols);
 	}
 

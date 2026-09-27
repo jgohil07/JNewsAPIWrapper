@@ -29,16 +29,19 @@ public final class Classifier {
 	public record Rule(String topic, String label, List<String> appliesTo, List<String> patterns) {}
 
 	@com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "_comment" })
-	record Document(List<Rule> rules) {}
+	record Document(Map<String, String> labels, List<Rule> rules) {}
 
 	private record Compiled(String topic, Set<String> appliesTo, Pattern pattern) {}
 
 	private final List<Compiled> rules;
 	private final Map<String, String> labels;
 
-	private Classifier(List<Rule> rules) {
+	private Classifier(List<Rule> rules, Map<String, String> feedLabels) {
 		List<Compiled> compiled = new ArrayList<>();
 		Map<String, String> l = new LinkedHashMap<>();
+		if (feedLabels != null) {
+			l.putAll(feedLabels);
+		}
 		for (Rule r : rules) {
 			if (r.topic() == null || !r.topic().matches("[a-z0-9-]+") || r.patterns() == null || r.patterns().isEmpty()) {
 				throw new NewsException("taxonomy.json: invalid rule " + r.topic());
@@ -56,17 +59,18 @@ public final class Classifier {
 		try (InputStream in = Classifier.class.getResourceAsStream("/taxonomy.json")) {
 			Objects.requireNonNull(in, "taxonomy.json missing from the classpath");
 			ObjectMapper m = new ObjectMapper().enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-			return new Classifier(m.readValue(in, Document.class).rules());
+			Document d = m.readValue(in, Document.class);
+			return new Classifier(d.rules(), d.labels());
 		} catch (IOException e) {
 			throw new NewsException("taxonomy.json is invalid: " + e.getMessage(), e);
 		}
 	}
 
 	public static Classifier of(List<Rule> rules) {
-		return new Classifier(rules);
+		return new Classifier(rules, Map.of());
 	}
 
-	/** Topic id to display label. */
+	/** Topic id to display label (feed topics and rule topics). */
 	public Map<String, String> labels() {
 		return labels;
 	}

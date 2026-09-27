@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="description" content="Minimal, fail-loud news wire: India finance, world, tech and science headlines from public feeds, refreshed every 6 hours.">
+<title>jnews wire</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#list">Skip to headlines</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="./" aria-label="jnews wire home"><span class="mark" aria-hidden="true">j</span><span class="brand-name">jnews<span class="brand-dim">/wire</span></span></a>
+    <label class="search">
+      <span class="visually-hidden">Search headlines</span>
+      <input id="q" type="search" placeholder="Search headlines, sources, symbols" autocomplete="off" spellcheck="false">
+      <kbd aria-hidden="true">/</kbd>
+    </label>
+    <div class="top-actions">
+      <span id="freshness" class="pill" role="status">loading…</span>
+      <button id="theme" class="icon-btn" type="button" aria-label="Toggle theme" title="Theme (t)">◐</button>
+      <button id="help-btn" class="icon-btn" type="button" aria-label="Keyboard shortcuts" title="Shortcuts (?)">?</button>
+    </div>
+  </div>
+</header>
+
+<div id="banner" class="banner" role="alert" hidden></div>
+
+<div class="layout">
+  <nav class="rail" aria-label="Categories">
+    <ul id="rail" class="rail-list"></ul>
+    <div class="rail-foot">
+      <button id="health-link" class="rail-health" type="button">
+        <span class="dot" id="health-dot" aria-hidden="true"></span><span id="health-summary">Source health</span>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main" class="main">
+    <div class="toolbar" role="toolbar" aria-label="Filters">
+      <div class="seg" id="window" role="group" aria-label="Time window">
+        <button type="button" data-h="6">6h</button>
+        <button type="button" data-h="24">24h</button>
+        <button type="button" data-h="0">all</button>
+      </div>
+      <div class="seg" id="sort" role="group" aria-label="Sort">
+        <button type="button" data-sort="time">latest</button>
+        <button type="button" data-sort="coverage">most covered</button>
+      </div>
+      <label class="select">
+        <span class="visually-hidden">Source</span>
+        <select id="source-filter"><option value="">all sources</option></select>
+      </label>
+      <button id="density" class="chip-btn" type="button" title="Density (d)">compact</button>
+      <span id="count" class="count mono"></span>
+    </div>
+    <div id="topics" class="topics" aria-label="Topics"></div>
+
+    <section id="list-view" aria-live="polite">
+      <ol id="list" class="list" tabindex="-1"></ol>
+      <p id="empty" class="empty" hidden></p>
+    </section>
+
+    <section id="health-view" class="health" hidden aria-labelledby="health-title">
+      <div class="health-head">
+        <h2 id="health-title">Source health</h2>
+        <button id="health-close" class="chip-btn" type="button">back to headlines</button>
+      </div>
+      <p class="health-note">A source only contributes headlines when it is <b>ok</b>. <b>stale</b> means its newest item is older than its limit; <b>failed</b> means it could not be fetched, was not a feed, or had too many invalid items. Nothing is patched over.</p>
+      <div id="health-cats" class="health-cats"></div>
+      <div class="table-wrap">
+        <table class="health-table">
+          <thead><tr><th scope="col">status</th><th scope="col">source</th><th scope="col">categories</th><th scope="col" class="num">items</th><th scope="col" class="num">newest</th><th scope="col">detail</th></tr></thead>
+          <tbody id="health-rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <span>Headlines and links from public feeds; articles belong to their publishers.</span>
+    <span class="foot-links">
+      <a href="data/latest.json">latest.json</a>
+      <a href="data/india.json">india.json</a>
+      <a href="https://github.com/jgohil07/JNewsAPIWrapper" rel="noopener noreferrer">source</a>
+    </span>
+  </div>
+</footer>
+
+<dialog id="help" class="help" aria-labelledby="help-title">
+  <h2 id="help-title">Keyboard</h2>
+  <dl class="keys">
+    <dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>next / previous headline</dd>
+    <dt><kbd>o</kbd> <kbd>Enter</kbd></dt><dd>open selected in a new tab</dd>
+    <dt><kbd>c</kbd></dt><dd>show other outlets covering it</dd>
+    <dt><kbd>m</kbd></dt><dd>mark read / unread</dd>
+    <dt><kbd>/</kbd></dt><dd>search</dd>
+    <dt><kbd>0</kbd>–<kbd>9</kbd></dt><dd>all / category</dd>
+    <dt><kbd>h</kbd></dt><dd>source health</dd>
+    <dt><kbd>t</kbd> <kbd>d</kbd></dt><dd>theme / density</dd>
+    <dt><kbd>Esc</kbd></dt><dd>clear search, close</dd>
+  </dl>
+  <form method="dialog"><button class="chip-btn" type="submit">close</button></form>
+</dialog>
+</body>
+</html>
