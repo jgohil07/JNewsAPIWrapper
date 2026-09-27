@@ -45,10 +45,19 @@ public final class Validator {
 	private Validator() {}
 
 	public static Outcome validate(SourceConfig cfg, List<RawItem> raw, Instant fetchedAt, Instant now) {
+		return validate(cfg, raw, fetchedAt, now, false);
+	}
+
+	/**
+	 * @param emptyIsHealthy true for search-style sources, where no results is a valid answer rather than a broken feed
+	 */
+	public static Outcome validate(SourceConfig cfg, List<RawItem> raw, Instant fetchedAt, Instant now,
+			boolean emptyIsHealthy) {
 		Map<String, NewsItem> valid = new LinkedHashMap<>();
 		Map<String, Integer> reasons = new LinkedHashMap<>();
 		int rejected = 0;
 		Instant newest = null;
+		Instant oldest = null;
 		for (RawItem r : raw) {
 			String reason = check(r, now);
 			if (reason != null) {
@@ -61,11 +70,16 @@ public final class Validator {
 			if (newest == null || item.publishedAt().isAfter(newest)) {
 				newest = item.publishedAt();
 			}
+			if (oldest == null || item.publishedAt().isBefore(oldest)) {
+				oldest = item.publishedAt();
+			}
 		}
 		List<NewsItem> items = new ArrayList<>(valid.values());
 		String error = null;
 		String status = SourceHealth.OK;
-		if (raw.isEmpty()) {
+		if (raw.isEmpty() && emptyIsHealthy) {
+			status = SourceHealth.OK;
+		} else if (raw.isEmpty()) {
 			status = SourceHealth.FAILED;
 			error = "feed lists no items";
 		} else if (rejected > raw.size() * MAX_REJECT_RATIO) {
@@ -76,7 +90,7 @@ public final class Validator {
 			error = "newest item is " + Duration.between(newest, now).toHours() + " h old (limit " + cfg.maxAgeHours() + " h)";
 		}
 		SourceHealth health = new SourceHealth(cfg.id(), cfg.name(), cfg.homepage(), cfg.categories(), cfg.fallback(),
-				status, items.size(), rejected, newest, cfg.maxAgeHours(), 0, error,
+				status, items.size(), rejected, newest, oldest, cfg.maxAgeHours(), 0, error,
 				rejected > 0 && error == null ? rejected + " item(s) dropped: " + summarise(reasons) : null);
 		return new Outcome(SourceHealth.OK.equals(status) ? items : List.of(), health);
 	}
@@ -84,7 +98,7 @@ public final class Validator {
 	/** Health for a source that could not be read at all. */
 	public static SourceHealth failed(SourceConfig cfg, String status, String error) {
 		return new SourceHealth(cfg.id(), cfg.name(), cfg.homepage(), cfg.categories(), cfg.fallback(), status, 0, 0,
-				null, cfg.maxAgeHours(), 0, error, null);
+				null, null, cfg.maxAgeHours(), 0, error, null);
 	}
 
 	/** @return why {@code r} is invalid, or null */

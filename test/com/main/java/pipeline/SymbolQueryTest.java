@@ -38,6 +38,19 @@ class SymbolQueryTest {
 	}
 
 	@Test
+	void ignoresNameAtTheStartOfALongerName() {
+		// Review finding 5.
+		assertFalse(SymbolQuery.mentions(SymbolQuery.namePattern("Arvind"), "Arvind Kejriwal slams the Centre"));
+		assertFalse(SymbolQuery.mentions(SymbolQuery.namePattern("Atul"), "Atul Kumar appointed chairman"));
+		assertFalse(SymbolQuery.mentions(SymbolQuery.namePattern("Mahindra & Mahindra"), "Mahindra & Mahindra Financial Services raises funds"));
+		assertFalse(SymbolQuery.mentions(SymbolQuery.namePattern("Tata Motors"), "Tata Motors Passenger Vehicles cuts prices"));
+		assertFalse(SymbolQuery.mentions(SymbolQuery.namePattern("PTC India"), "PTC India Financial Services posts loss"));
+		assertTrue(SymbolQuery.mentions(SymbolQuery.namePattern("Tata Motors"), "Tata Motors Q2 profit jumps 20%"));
+		assertTrue(SymbolQuery.mentions(SymbolQuery.namePattern("Reliance Industries"), "Reliance Industries Shares Rise On Jio Listing Buzz"));
+		assertTrue(SymbolQuery.mentions(SymbolQuery.namePattern("Mahindra & Mahindra"), "Mahindra & Mahindra, Maruti lead auto rally"));
+	}
+
+	@Test
 	void validSymbols() {
 		assertTrue(SymbolQuery.SYMBOL.matcher("M&M").matches());
 		assertTrue(SymbolQuery.SYMBOL.matcher("BAJAJ-AUTO").matches());

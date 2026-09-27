@@ -181,6 +181,16 @@ class AggregatorTest {
 	}
 
 	@Test
+	void windowKeepsAStoryWhenAnyCopyIsInside() {
+		// Review finding 3: preferred source published 30 h ago, another 2 h ago; --since 24h must keep the story.
+		String title = "Sensex closes at a record high on strong FII inflows";
+		behaviour.put("a", () -> List.of(RawItem.of(title, "https://a.example/x", null, NOW.minus(Duration.ofHours(30)), "t")));
+		behaviour.put("b", () -> List.of(RawItem.of(title, "https://b.example/x", null, NOW.minus(Duration.ofHours(2)), "t")));
+		Aggregator.Result r = aggregator().run(new Aggregator.Options(Set.of("mk"), Duration.ofHours(24), true, false, Set.of(), null));
+		assertTrue(r.items().stream().anyMatch(i -> i.title().equals(title)), "story must survive the window");
+	}
+
+	@Test
 	void sinceWindowFiltersItems() {
 		Aggregator.Result r = aggregator().run(new Aggregator.Options(Set.of("mk"), Duration.ofMinutes(90), true, false, Set.of(), null));
 		assertEquals(3, r.items().size());

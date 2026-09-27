@@ -2,7 +2,9 @@ package com.main.java.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
@@ -96,17 +98,34 @@ public final class HttpFetcher {
 	private final int maxRetries;
 	private final String userAgent;
 	private final Sleeper sleeper;
+	private final Builder builder;
+
+	/** Most redirect hops followed for GET/HEAD. */
+	static final int MAX_REDIRECTS = 5;
 
 	private HttpFetcher(Builder b) {
 		this.client = HttpClient.newBuilder()
 				.connectTimeout(b.connectTimeout)
-				.followRedirects(HttpClient.Redirect.NORMAL)
+				.followRedirects(HttpClient.Redirect.NEVER) // followed manually, with target checks
 				.build();
 		this.requestTimeout = b.requestTimeout;
 		this.maxBodyBytes = b.maxBodyBytes;
 		this.maxRetries = b.maxRetries;
 		this.userAgent = b.userAgent;
 		this.sleeper = b.sleeper;
+		this.builder = b;
+	}
+
+	/** A fetcher with the same settings but a different body-size cap (for sources known to be large). */
+	public HttpFetcher withMaxBodyBytes(long n) {
+		Builder b = new Builder();
+		b.connectTimeout = builder.connectTimeout;
+		b.requestTimeout = builder.requestTimeout;
+		b.maxBodyBytes = n;
+		b.maxRetries = builder.maxRetries;
+		b.userAgent = builder.userAgent;
+		b.sleeper = builder.sleeper;
+		return new HttpFetcher(b);
 	}
 
 	public static HttpFetcher defaults() {
@@ -137,6 +156,37 @@ public final class HttpFetcher {
 	 */
 	public Response fetch(String method, URI uri, Map<String, String> headers, String body) {
 		checkScheme(uri);
+		boolean followable = method.equals("GET") || method.equals("HEAD");
+		boolean originPrivate = isNonPublic(uri);
+		URI current = uri;
+		for (int hop = 0;; hop++) {
+			Response r = fetchOnce(method, current, headers, body);
+			if (!followable || !isRedirect(r.status())) {
+				return r;
+			}
+			if (hop >= MAX_REDIRECTS) {
+				throw new FetchException("Too many redirects from " + redact(uri), r.status());
+			}
+			String location = r.headers().firstValue("location").orElseThrow(
+					() -> new FetchException("Redirect without Location from " + redact(r.uri()), r.status()));
+			URI next;
+			try {
+				next = current.resolve(location.strip());
+			} catch (IllegalArgumentException e) {
+				throw new FetchException("Malformed redirect from " + redact(current), r.status());
+			}
+			checkScheme(next);
+			if ("https".equalsIgnoreCase(current.getScheme()) && "http".equalsIgnoreCase(next.getScheme())) {
+				throw new FetchException("Refusing https-to-http redirect from " + redact(current), r.status());
+			}
+			if (!originPrivate && isNonPublic(next)) {
+				throw new FetchException("Refusing redirect from " + redact(current) + " to a non-public address", r.status());
+			}
+			current = next;
+		}
+	}
+
+	private Response fetchOnce(String method, URI uri, Map<String, String> headers, String body) {
 		HttpRequest.Builder rb = HttpRequest.newBuilder(uri)
 				.timeout(requestTimeout)
 				.header("User-Agent", userAgent)
@@ -223,16 +273,55 @@ public final class HttpFetcher {
 		}
 	}
 
+	private static boolean isRedirect(int status) {
+		return status == 301 || status == 302 || status == 303 || status == 307 || status == 308;
+	}
+
+	/** True when the host is, or resolves to, a loopback, private, link-local, unique-local or wildcard address. */
+	static boolean isNonPublic(URI uri) {
+		String host = uri.getHost();
+		if (host == null) {
+			return true;
+		}
+		String h = host.toLowerCase(Locale.ROOT);
+		if (h.equals("localhost") || h.endsWith(".localhost")) {
+			return true;
+		}
+		try {
+			for (InetAddress a : InetAddress.getAllByName(h.replace("[", "").replace("]", ""))) {
+				byte[] b = a.getAddress();
+				boolean uniqueLocal6 = b.length == 16 && (b[0] & 0xfe) == 0xfc;
+				boolean cgnat = b.length == 4 && (b[0] & 0xff) == 100 && (b[1] & 0xc0) == 64;
+				if (a.isLoopbackAddress() || a.isSiteLocalAddress() || a.isLinkLocalAddress() || a.isAnyLocalAddress()
+						|| a.isMulticastAddress() || uniqueLocal6 || cgnat) {
+					return true;
+				}
+			}
+			return false;
+		} catch (UnknownHostException e) {
+			return false; // the request itself then fails with a clear error
+		}
+	}
+
 	private static boolean isRetryable(int status) {
 		return status == 429 || (status >= 500 && status <= 599);
 	}
 
 	private byte[] readCapped(InputStream in, URI uri) throws IOException {
 		Thread reader = Thread.currentThread();
+		// state guarded by 'lock': 0 reading, 1 finished, 2 timed out. The watchdog interrupts only while still
+		// reading, and does so inside the lock, so the reader never keeps a stray interrupt after it finished.
+		Object lock = new Object();
+		int[] state = { 0 };
 		AtomicBoolean timedOut = new AtomicBoolean();
 		ScheduledFuture<?> dog = WATCHDOG.schedule(() -> {
-			timedOut.set(true);
-			reader.interrupt();
+			synchronized (lock) {
+				if (state[0] == 0) {
+					state[0] = 2;
+					timedOut.set(true);
+					reader.interrupt();
+				}
+			}
 		}, requestTimeout.toMillis(), TimeUnit.MILLISECONDS);
 		try (in) {
 			byte[] bytes = in.readNBytes((int) Math.min(Integer.MAX_VALUE - 8, maxBodyBytes + 1));
@@ -247,6 +336,11 @@ public final class HttpFetcher {
 			throw e;
 		} finally {
 			dog.cancel(false);
+			synchronized (lock) {
+				if (state[0] == 0) {
+					state[0] = 1;
+				}
+			}
 			if (timedOut.get()) {
 				Thread.interrupted(); // clear the watchdog's interrupt; the timeout is reported above
 			}

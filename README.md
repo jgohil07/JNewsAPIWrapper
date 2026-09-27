@@ -65,8 +65,11 @@ configuration error. The full contract for programs, including fields, guarantee
 ### Thesis-Engine
 
 ```bash
-java -jar /path/to/jnews.jar india --symbol "$SYMBOL" --since 2d --format json > news.json || echo "news unavailable: $?"
+tmp=$(mktemp) && java -jar /path/to/jnews.jar india --symbol "$SYMBOL" --since 2d --format json > "$tmp"
+case $? in 0|3) mv "$tmp" news.json ;; *) rm -f "$tmp"; echo "news unavailable" >&2 ;; esac
 ```
+
+A failed run (exit 1 or 2) never overwrites the last good `news.json`.
 
 NSE's own announcements carry `symbols[].match = "exact"`. Headlines that name the company carry `"name"`, which is
 lower confidence.
@@ -120,7 +123,12 @@ test locks them. Behaviour changes in 2.0:
 - Supported values match what v1 served on 2026-09-27: categories `business, entertainment, general, science, sports,
   technology`, languages `en, de`, countries `au, de, gb, in, it, us`, and sortBy `top`. v1 silently returns an empty
   list for unknown categories, and `top` data when asked for `latest`, so those requests are now rejected.
-- `JsonFactory` is deprecated; use `HttpFetcher` and Jackson.
+- Requests have timeouts (10 s to connect, 20 s for headers and again for the body) and a 5 MB response cap. GET
+  requests are retried up to twice on HTTP 429/5xx or network errors, with a backoff of up to 30 s; POST/PUT/DELETE
+  are never retried. Redirects are followed for GET only, never from https to http, and never to private or loopback
+  addresses.
+- `JsonFactory` is deprecated; use `HttpFetcher` and Jackson. Its header name and value arrays must now have the
+  same length (otherwise `IllegalArgumentException`), and `parameters` is now applied to POST and PUT too.
 
 Sample run: `java -cp target/jnews.jar com.main.java.startup.InitializeNewsWrapper` (needs `NEWSAPI_KEY`).
 

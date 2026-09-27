@@ -50,6 +50,10 @@ final class Output {
 			throw new UncheckedIOException(e);
 		}
 		out.flush();
+		if (out.checkError()) {
+			err.println("jnews: FAILED - could not write the output (closed pipe or full disk); treat it as missing");
+			return ExitCodes.FAILED;
+		}
 		if (status == Aggregator.Status.PARTIAL && !allowPartial) {
 			return ExitCodes.PARTIAL;
 		}

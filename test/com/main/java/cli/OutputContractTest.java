@@ -40,9 +40,9 @@ class OutputContractTest {
 				List.of(new SymbolTag("MBAPL", "exact")),
 				List.of(new Coverage("mint-economy", "Mint · Economy", "https://mint.example/b", T.minusSeconds(300))));
 		SourceHealth ok = new SourceHealth("et-economy", "Economic Times · Economy", "https://et.example/", List.of("economy"),
-				false, SourceHealth.OK, 1, 0, T.minusSeconds(600), 72, 120, null, null);
+				false, SourceHealth.OK, 1, 0, T.minusSeconds(600), T.minusSeconds(600), 72, 120, null, null);
 		SourceHealth bad = new SourceHealth("bs-economy", "Business Standard · Economy", null, List.of("economy"), false,
-				SourceHealth.FAILED, 0, 0, null, 72, 90, "HTTP 403 from https://bs.example/rss", null);
+				SourceHealth.FAILED, 0, 0, null, null, 72, 90, "HTTP 403 from https://bs.example/rss", null);
 		return new Aggregator.Result(T, status, List.of(item), List.of(ok, bad),
 				List.of(new Aggregator.CategoryStatus("economy", "Economy & Policy", "india-finance", 1, 2, true,
 						status != Aggregator.Status.FAILED)));
@@ -89,6 +89,28 @@ class OutputContractTest {
 		assertTrue(e.contains("FAILED"));
 		assertTrue(e.contains("bs-economy"));
 		assertTrue(e.contains("economy 1/2"));
+	}
+
+	@Test
+	void failedWriteIsAFailure() {
+		// Review finding 6: a closed pipe or full disk must not exit 0.
+		PrintStream broken = new PrintStream(new java.io.OutputStream() {
+			@Override
+			public void write(int b) throws java.io.IOException {
+				throw new java.io.IOException("closed");
+			}
+		}, true, StandardCharsets.UTF_8);
+		int code = Output.emit(Envelope.of(result(Aggregator.Status.OK), Map.of()), Aggregator.Status.OK, Output.Format.json,
+				false, false, true, broken, new PrintStream(err, true, StandardCharsets.UTF_8));
+		assertEquals(ExitCodes.FAILED, code);
+	}
+
+	@Test
+	void cliStreamsAreUtf8WhateverTheLocale() {
+		// Review finding 2.
+		JNewsCli cli = new JNewsCli();
+		assertEquals(StandardCharsets.UTF_8, cli.out.charset());
+		assertEquals(StandardCharsets.UTF_8, cli.err.charset());
 	}
 
 	@Test

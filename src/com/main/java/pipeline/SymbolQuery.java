@@ -43,10 +43,21 @@ public final class SymbolQuery {
 
 	static final Set<String> FINANCE_CATEGORIES = Set.of("india-markets", "india-business", "economy");
 
+	static final long NSE_HISTORY_MAX_BYTES = 25L * 1024 * 1024;
+
 	private final SourceRegistry registry;
 	private final Aggregator aggregator;
 	private final HttpFetcher http;
 	private final Clock clock;
+	private String nseApi = NseSymbolAnnouncementsSource.API;
+	private String googleSearch = "https://news.google.com/rss/search";
+
+	/** Test seam: point the per-symbol sources at other endpoints. */
+	SymbolQuery endpoints(String nseApiBase, String googleSearchBase) {
+		this.nseApi = nseApiBase;
+		this.googleSearch = googleSearchBase;
+		return this;
+	}
 
 	public SymbolQuery(SourceRegistry registry, Aggregator aggregator, HttpFetcher http, Clock clock) {
 		this.registry = registry;
@@ -64,20 +75,27 @@ public final class SymbolQuery {
 		Pattern namePattern = namePattern(name);
 
 		SourceConfig nseCfg = new SourceConfig("nse-symbol", "NSE · Announcements for " + company.symbol(), "nse-api",
-				NseSymbolAnnouncementsSource.API, "https://www.nseindia.com/get-quotes/equity?symbol="
+				nseApi, "https://www.nseindia.com/get-quotes/equity?symbol="
 						+ URLEncoder.encode(company.symbol(), StandardCharsets.UTF_8),
 				"in", "filing", "en", List.of("filings"), List.of("filings"), 24 * 365 * 5, false, "browser",
 				"Asia/Kolkata", "dd-MMM-yyyy HH:mm:ss", false, 1, null);
 		long days = Math.max(1, (since.toHours() + 23) / 24);
 		String q = "\"" + name + "\" when:" + days + "d";
 		SourceConfig googleCfg = new SourceConfig("google-news-symbol", "Google News · search", "rss",
-				"https://news.google.com/rss/search?q=" + URLEncoder.encode(q, StandardCharsets.UTF_8)
+				googleSearch + "?q=" + URLEncoder.encode(q, StandardCharsets.UTF_8)
 						+ "&hl=en-IN&gl=IN&ceid=IN:en",
 				"https://news.google.com/", "in", "news", "en", List.of("india-business"), List.of(), 24 * 30, false,
 				"default", null, null, false, 40, null);
 
-		List<NewsSource> direct = List.of(new NseSymbolAnnouncementsSource(nseCfg, http, company.symbol()),
-				new RssSource(googleCfg, http));
+		// A large filer's full announcement history is several MB (ICICIBANK ~3.8 MB on 2026-09-27).
+		NewsSource nse = new NseSymbolAnnouncementsSource(nseCfg, http.withMaxBodyBytes(NSE_HISTORY_MAX_BYTES), company.symbol());
+		NewsSource google = new RssSource(googleCfg, http) {
+			@Override
+			public boolean emptyIsHealthy() {
+				return true; // a search with no results is an answer, not a broken feed
+			}
+		};
+		List<NewsSource> direct = List.of(nse, google);
 		Map<String, Validator.Outcome> outcomes = new LinkedHashMap<>(aggregator.fetchSources(direct, deadline));
 		outcomes.putAll(aggregator.fetchAll(registry.sourcesFor(FINANCE_CATEGORIES).stream()
 				.filter(s -> !s.fallback()).toList(), deadline));
@@ -110,8 +128,10 @@ public final class SymbolQuery {
 		boolean nseOk = outcomes.get(nseCfg.id()).health().isOk();
 		boolean anyBad = health.stream().anyMatch(h -> !h.isOk() && !SourceHealth.SKIPPED.equals(h.status()));
 		boolean anyOk = health.stream().anyMatch(SourceHealth::isOk);
-		Aggregator.Status status = !anyOk ? Aggregator.Status.FAILED
-				: (!nseOk || anyBad) ? Aggregator.Status.PARTIAL : Aggregator.Status.OK;
+		// NSE's own announcements are the required part of a symbol query: without them the answer is incomplete in a
+		// way the consumer cannot see, so the run fails (exit 1) rather than returning headlines only.
+		Aggregator.Status status = !nseOk || !anyOk ? Aggregator.Status.FAILED
+				: anyBad ? Aggregator.Status.PARTIAL : Aggregator.Status.OK;
 		List<Aggregator.CategoryStatus> cats = List.of(new Aggregator.CategoryStatus("filings", "NSE Filings",
 				"india-finance", nseOk ? 1 : 0, 1, true, nseOk));
 		return new Aggregator.Result(now, status, items, health, cats);
@@ -147,21 +167,41 @@ public final class SymbolQuery {
 		return mentions(name, item.title()) || (item.summary() != null && mentions(name, item.summary()));
 	}
 
-	/** True when {@code text} names the company and the match is not the tail of a longer capitalised name. */
+	/**
+	 * True when {@code text} names the company and the match is neither the tail nor the head of a longer capitalised
+	 * name ("State Bank of India", "Mahindra & Mahindra Financial Services", "Arvind Kejriwal").
+	 */
 	static boolean mentions(Pattern name, String text) {
 		Matcher m = name.matcher(text);
 		while (m.find()) {
 			String before = text.substring(0, m.start()).stripTrailing();
 			int sp = Math.max(before.lastIndexOf(' '), before.lastIndexOf('\n'));
 			String prevWord = before.substring(sp + 1);
-			boolean partOfLongerName = !prevWord.isEmpty() && Character.isUpperCase(prevWord.codePointAt(0))
+			boolean longerBefore = !prevWord.isEmpty() && Character.isUpperCase(prevWord.codePointAt(0))
 					&& !isSentenceBoundary(before) && !COMMON_LEADS.contains(prevWord.toLowerCase(Locale.ROOT));
-			if (!partOfLongerName) {
+			String after = text.substring(m.end());
+			Matcher next = NEXT_WORD.matcher(after);
+			boolean longerAfter = next.lookingAt() && Character.isUpperCase(next.group(1).codePointAt(0))
+					&& !COMMON_TRAILS.contains(next.group(1).toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", ""));
+			if (!longerBefore && !longerAfter) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+	/** The next word when it directly follows (one space or hyphen, no punctuation in between). */
+	private static final Pattern NEXT_WORD = Pattern.compile("[ \\u00A0-]+([\\p{L}&][\\p{L}\\p{N}&.'\u2019]*)");
+
+	/** Capitalised words that commonly follow a company name in headlines without being part of it. */
+	private static final Set<String> COMMON_TRAILS = Set.of("shares", "share", "stock", "stocks", "q1", "q2", "q3", "q4", "results", "result", "profit", "net", "revenue",
+			"sales", "board", "ipo", "dividend", "rating", "ratings", "order", "orders", "deal", "block", "bulk", "stake",
+			"says", "said", "to", "and", "in", "on", "at", "for", "of", "with", "from", "by", "vs", "rises", "rise", "falls",
+			"fall", "gains", "gain", "jumps", "jump", "surges", "surge", "slumps", "slips", "soars", "hits", "gets", "wins",
+			"bags", "secures", "reports", "posts", "announces", "plans", "sees", "raises", "cuts", "shareholders",
+			"investors", "ceo", "md", "cfo", "chairman", "management", "price", "target", "ltd", "limited", "is", "was",
+			"has", "will", "may", "why", "news", "update", "updates", "files", "fy26", "fy27", "fy28", "h1", "h2",
+			"outperforms", "underperforms", "declares", "approves", "appoints", "completes", "acquires", "shares.", "stock.");
 
 	/** Capitalised words that commonly precede a company name without being part of it. */
 	private static final Set<String> COMMON_LEADS = Set.of("the", "at", "on", "in", "for", "from", "by", "with", "and",

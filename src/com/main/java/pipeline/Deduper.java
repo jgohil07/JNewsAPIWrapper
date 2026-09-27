@@ -92,23 +92,38 @@ public final class Deduper {
 			parent[i] = i;
 		}
 		Map<String, Integer> byId = new HashMap<>();
-		Map<String, List<Integer>> byTitle = new HashMap<>();
+		// Headline groups per title key: an anchor item and the sources already in the group. An item joins a group
+		// only when it comes from a source not yet in it and is within TITLE_WINDOW of the anchor (no chaining), so
+		// one source's recurring headlines ("Company: Updates") never swallow each other.
+		Map<String, List<TitleGroup>> byTitle = new HashMap<>();
 		for (int i = 0; i < n; i++) {
 			NewsItem it = items.get(i);
 			Integer same = byId.putIfAbsent(it.id(), i);
 			if (same != null) {
 				union(parent, same, i);
+				continue;
 			}
-			String key = titleKey(it.title());
-			if (key != null) {
-				List<Integer> list = byTitle.computeIfAbsent(key, k -> new ArrayList<>());
-				for (int j : list) {
-					Duration gap = Duration.between(items.get(j).publishedAt(), it.publishedAt()).abs();
-					if (gap.compareTo(TITLE_WINDOW) <= 0) {
-						union(parent, j, i);
-					}
+			// Exchange filings are distinct documents even when their titles match.
+			String key = "filing".equals(it.kind()) ? null : titleKey(it.title());
+			if (key == null) {
+				continue;
+			}
+			List<TitleGroup> groupsForKey = byTitle.computeIfAbsent(key, k -> new ArrayList<>());
+			TitleGroup joined = null;
+			for (TitleGroup g : groupsForKey) {
+				Duration gap = Duration.between(items.get(g.anchor).publishedAt(), it.publishedAt()).abs();
+				if (gap.compareTo(TITLE_WINDOW) <= 0 && !g.sources.contains(it.source().id())) {
+					joined = g;
+					break;
 				}
-				list.add(i);
+			}
+			if (joined == null) {
+				TitleGroup g = new TitleGroup(i);
+				g.sources.add(it.source().id());
+				groupsForKey.add(g);
+			} else {
+				union(parent, joined.anchor, i);
+				joined.sources.add(it.source().id());
 			}
 		}
 		Map<Integer, List<NewsItem>> groups = new LinkedHashMap<>();
@@ -154,6 +169,15 @@ public final class Deduper {
 		return new NewsItem(primary.id(), primary.title(), primary.url(), primary.source(), primary.publishedAt(),
 				primary.fetchedAt(), primary.summary(), primary.kind(), primary.region(), primary.language(),
 				List.copyOf(categories), List.copyOf(topics.values()), List.copyOf(symbols), List.copyOf(coverage.values()));
+	}
+
+	private static final class TitleGroup {
+		final int anchor;
+		final Set<String> sources = new java.util.HashSet<>();
+
+		TitleGroup(int anchor) {
+			this.anchor = anchor;
+		}
 	}
 
 	private static int find(int[] p, int i) {

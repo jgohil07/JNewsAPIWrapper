@@ -39,15 +39,16 @@ public class NseAnnouncementsSource extends RssSource {
 		if (master == null) {
 			notes.add("NSE symbol list unavailable; filings are not tagged with symbols");
 		}
-		// NSE lists routine notices (e.g. daily ETF NAV declarations) with an empty <link/> by design. They cannot
-		// be linked to, so they are left out and counted here instead of being treated as a broken feed.
+		// NSE lists daily fund NAV declarations with an empty <link/> by design. Those are left out and counted here.
+		// Any other item without a link stays in, so validation counts it as invalid and a feed that stops linking its
+		// filings fails loudly instead of shrinking silently.
 		List<RawItem> all = super.fetch();
-		List<RawItem> linked = all.stream().filter(i -> i.url() != null && !i.url().isBlank()).toList();
-		if (linked.size() < all.size()) {
-			notes.add((all.size() - linked.size()) + " link-less notice(s) skipped");
+		List<RawItem> kept = all.stream().filter(i -> hasLink(i) || !isNavNotice(i)).toList();
+		if (kept.size() < all.size()) {
+			notes.add((all.size() - kept.size()) + " link-less NAV notice(s) skipped");
 		}
 		note = notes.isEmpty() ? null : String.join("; ", notes);
-		return linked;
+		return kept;
 	}
 
 	@Override
@@ -66,8 +67,20 @@ public class NseAnnouncementsSource extends RssSource {
 			symbols = master.symbolForExactName(company).map(s -> List.of(new SymbolTag(s, "exact"))).orElse(List.of());
 		}
 		String summary = e.description() == null ? null : SUBJECT.matcher(e.description()).replaceFirst("").strip();
-		return new RawItem(title, e.link() == null ? null : e.link().strip(), summary, parseDate(e.date()),
+		String link = e.link() == null || e.link().isBlank() ? null : e.link().strip();
+		return new RawItem(title, link, summary, parseDate(e.date()),
 				e.date(), null, symbols);
+	}
+
+	private static boolean hasLink(RawItem i) {
+		return i.url() != null && !i.url().isBlank();
+	}
+
+	/** Routine fund NAV declaration (NSE's wording: "... Net Asset Value ... |SUBJECT: Declaration of NAV"). */
+	static boolean isNavNotice(RawItem i) {
+		String d = i.summaryHtml() == null ? "" : i.summaryHtml();
+		String t = i.title() == null ? "" : i.title();
+		return t.endsWith(": Declaration of NAV") || d.contains("Net Asset Value");
 	}
 
 	static String subject(String description) {

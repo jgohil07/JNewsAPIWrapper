@@ -79,6 +79,34 @@ class NseTest {
 	}
 
 	@Test
+	void onlyNavNoticesMayLackALink() throws IOException {
+		// Review finding 8.
+		try (FixtureServer s = new FixtureServer()) {
+			s.on("/rss", Reply.xml("""
+					<rss><channel>
+					<item><title>HDFC Gold ETF</title><link/><description>HDFCGOLD : HDFC AMC has informed the Exchange that the Net Asset Value (per unit) is Rs. 128.6 |SUBJECT: Declaration of NAV</description><pubDate>27-Sep-2026 07:00:00</pubDate></item>
+					<item><title>Acme Limited</title><link/><description>Acme Limited has informed the Exchange regarding Outcome of Board Meeting</description><pubDate>27-Sep-2026 07:00:00</pubDate></item>
+					</channel></rss>"""));
+			NseAnnouncementsSource src = new NseAnnouncementsSource(config("nse-rss", s.url("/rss")), HttpFetcher.defaults(), () -> null);
+			List<RawItem> items = src.fetch();
+			assertEquals(1, items.size(), "NAV notice skipped, the board-meeting item kept for validation to reject");
+			assertEquals(null, items.get(0).url());
+			assertTrue(src.note().contains("1 link-less NAV notice(s) skipped"));
+		}
+	}
+
+	@Test
+	void perSymbolApiMostlyWithoutDocumentsFails() throws IOException {
+		try (FixtureServer s = new FixtureServer()) {
+			String rec = "{\"symbol\":\"MBAPL\",\"sm_name\":\"M\",\"desc\":\"d\",\"an_dt\":\"24-Sep-2026 09:58:34\",\"attchmntFile\":\"%s\"}";
+			s.on("/api", Reply.json("[" + rec.formatted("-") + "," + rec.formatted("-") + "," + rec.formatted("https://nse.example/a.pdf") + "]"));
+			NseSymbolAnnouncementsSource src = new NseSymbolAnnouncementsSource(config("nse-api", s.url("/api?symbol=")),
+					HttpFetcher.defaults(), "MBAPL");
+			assertThrows(NewsException.class, src::fetch);
+		}
+	}
+
+	@Test
 	void missingSymbolListIsANoteNotAFailure() throws IOException {
 		try (FixtureServer s = new FixtureServer()) {
 			s.on("/rss", Reply.xml("<rss><channel></channel></rss>"));

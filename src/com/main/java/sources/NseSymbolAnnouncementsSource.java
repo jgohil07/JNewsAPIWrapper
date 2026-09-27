@@ -39,7 +39,13 @@ public class NseSymbolAnnouncementsSource extends JsonApiSource {
 		// Announcements without a document carry attchmntFile "-": they have no page of their own to link to, so
 		// they are left out and counted (see note()) rather than given a made-up URL.
 		List<RawItem> linked = all.stream().filter(i -> i.url() != null && i.url().startsWith("https://")).toList();
-		note = linked.size() < all.size() ? (all.size() - linked.size()) + " announcement(s) without a document skipped" : null;
+		int skipped = all.size() - linked.size();
+		if (skipped * 2 > all.size()) {
+			// Normally ~15% have no document (e.g. "News Verification"); a majority means the format changed.
+			throw new NewsException(config.id() + ": " + skipped + " of " + all.size()
+					+ " announcements have no document link; the response format may have changed");
+		}
+		note = skipped > 0 ? skipped + " announcement(s) without a document skipped" : null;
 		return linked;
 	}
 

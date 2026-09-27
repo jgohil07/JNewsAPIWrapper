@@ -110,6 +110,29 @@ class HttpFetcherTest {
 	}
 
 	@Test
+	void followsRedirectsForGetOnly() {
+		server.on("/old", new Reply(302, "text/plain", new byte[0], Map.of("Location", "/new")));
+		server.on("/new", Reply.of(200, "text/plain", "moved"));
+		assertEquals("moved", fetcher.get(URI.create(server.url("/old")), Map.of()).text());
+		assertEquals(302, fetcher.fetch("POST", URI.create(server.url("/old")), Map.of(), "{}").status());
+	}
+
+	@Test
+	void redirectLoopsStop() {
+		server.on("/loop", new Reply(302, "text/plain", new byte[0], Map.of("Location", "/loop")));
+		assertThrows(FetchException.class, () -> fetcher.get(URI.create(server.url("/loop")), Map.of()));
+	}
+
+	@Test
+	void nonPublicAddressesAreRecognised() {
+		for (String u : new String[] { "http://127.0.0.1/", "http://localhost/", "http://10.1.2.3/", "http://192.168.1.1/",
+				"http://169.254.169.254/latest/meta-data", "http://[::1]/", "http://[fd00::1]/", "http://100.64.0.1/" }) {
+			assertTrue(HttpFetcher.isNonPublic(URI.create(u)), u);
+		}
+		assertFalse(HttpFetcher.isNonPublic(URI.create("http://8.8.8.8/")));
+	}
+
+	@Test
 	void postIsNeverRetried() {
 		server.on("/p", Reply.of(503, "text/plain", "busy"));
 		HttpFetcher.Response r = fetcher.fetch("POST", URI.create(server.url("/p")), Map.of(), "{}");

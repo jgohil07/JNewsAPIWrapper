@@ -1,6 +1,11 @@
 package com.main.java.cli;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
@@ -51,8 +56,9 @@ public final class JNewsCli implements Callable<Integer> {
 	@Option(names = "--env-file", description = "Settings file (default: .env in the working directory).")
 	Path envFile;
 
-	PrintStream out = System.out;
-	PrintStream err = System.err;
+	/** Always UTF-8: under a C/POSIX locale the JVM would otherwise turn non-ASCII text into '?'. */
+	PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out), true, StandardCharsets.UTF_8);
+	PrintStream err = new PrintStream(new FileOutputStream(FileDescriptor.err), true, StandardCharsets.UTF_8);
 	Clock clock = Clock.systemUTC();
 	HttpFetcher http = HttpFetcher.defaults();
 
@@ -69,6 +75,8 @@ public final class JNewsCli implements Callable<Integer> {
 
 	static CommandLine commandLine(JNewsCli root) {
 		CommandLine cl = new CommandLine(root);
+		cl.setOut(new PrintWriter(new OutputStreamWriter(root.out, StandardCharsets.UTF_8), true));
+		cl.setErr(new PrintWriter(new OutputStreamWriter(root.err, StandardCharsets.UTF_8), true));
 		cl.setCaseInsensitiveEnumValuesAllowed(true);
 		cl.setExecutionStrategy(pr -> {
 			try {

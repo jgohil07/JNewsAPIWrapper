@@ -236,6 +236,7 @@
     "items",
     "rejected",
     "newest_at",
+    "oldest_at",
     "max_age_hours",
     "duration_ms",
     "error",
@@ -286,6 +287,14 @@
       "null"
      ],
      "format": "date-time"
+    },
+    "oldest_at": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "format": "date-time",
+     "description": "Oldest valid item: the source covers oldest_at..newest_at only."
     },
     "max_age_hours": {
      "type": "integer",

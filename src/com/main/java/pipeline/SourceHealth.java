@@ -11,12 +11,14 @@ import java.util.List;
  * @param items      valid items read
  * @param rejected   items dropped by validation
  * @param newestAt   newest valid item, or null
+ * @param oldestAt   oldest valid item, or null: the source only covers the span oldestAt..newestAt, so a longer
+ *                   {@code --since} window is not fully covered by it
  * @param error      why the source is not ok, or null
  * @param note       non-fatal remark (e.g. symbol list unavailable), or null
  * @author jgohil
  */
 public record SourceHealth(String id, String name, String homepage, List<String> categories, boolean fallback,
-		String status, int items, int rejected, Instant newestAt, int maxAgeHours, long durationMs, String error,
+		String status, int items, int rejected, Instant newestAt, Instant oldestAt, int maxAgeHours, long durationMs, String error,
 		String note) {
 
 	public static final String OK = "ok";
@@ -34,12 +36,12 @@ public record SourceHealth(String id, String name, String homepage, List<String>
 	}
 
 	public SourceHealth withDuration(long ms) {
-		return new SourceHealth(id, name, homepage, categories, fallback, status, items, rejected, newestAt, maxAgeHours,
+		return new SourceHealth(id, name, homepage, categories, fallback, status, items, rejected, newestAt, oldestAt, maxAgeHours,
 				ms, error, note);
 	}
 
 	public SourceHealth withNote(String n) {
-		return new SourceHealth(id, name, homepage, categories, fallback, status, items, rejected, newestAt, maxAgeHours,
+		return new SourceHealth(id, name, homepage, categories, fallback, status, items, rejected, newestAt, oldestAt, maxAgeHours,
 				durationMs, error, n);
 	}
 }

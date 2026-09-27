@@ -123,15 +123,17 @@ public final class Aggregator {
 		boolean anyBad = health.stream().anyMatch(h -> !h.isOk() && !SourceHealth.SKIPPED.equals(h.status()));
 		Status status = requiredMissing ? Status.FAILED : (anyBad || anyMissing) ? Status.PARTIAL : Status.OK;
 
-		List<NewsItem> all = new ArrayList<>();
-		outcomes.values().forEach(o -> all.addAll(o.items()));
-		Map<String, Integer> priority = new HashMap<>();
-		registry.sources().values().forEach(s -> priority.put(s.id(), s.priority()));
 		Instant now = clock.instant();
 		Instant cutoff = options.since() == null ? null : now.minus(options.since());
+		// The window applies to every copy before merging, so a story stays when any source published it inside it.
+		List<NewsItem> all = new ArrayList<>();
+		outcomes.values().forEach(o -> o.items().stream()
+				.filter(i -> cutoff == null || !i.publishedAt().isBefore(cutoff))
+				.forEach(all::add));
+		Map<String, Integer> priority = new HashMap<>();
+		registry.sources().values().forEach(s -> priority.put(s.id(), s.priority()));
 		List<NewsItem> items = Deduper.merge(all, priority).stream()
 				.map(classifier::classify)
-				.filter(i -> cutoff == null || !i.publishedAt().isBefore(cutoff))
 				.filter(i -> options.topics().isEmpty() || i.topics().stream().anyMatch(t -> options.topics().contains(t.id())))
 				.sorted(Comparator.comparing(NewsItem::publishedAt).reversed()
 						.thenComparingInt(i -> priority.getOrDefault(i.source().id(), Integer.MAX_VALUE))
@@ -188,7 +190,7 @@ public final class Aggregator {
 		long t0 = System.nanoTime();
 		Instant fetchedAt = clock.instant();
 		try {
-			Validator.Outcome o = Validator.validate(cfg, s.fetch(), fetchedAt, clock.instant());
+			Validator.Outcome o = Validator.validate(cfg, s.fetch(), fetchedAt, clock.instant(), s.emptyIsHealthy());
 			SourceHealth h = o.health().withDuration(elapsedMs(t0));
 			if (s.note() != null) {
 				h = h.withNote(h.note() == null ? s.note() : h.note() + "; " + s.note());

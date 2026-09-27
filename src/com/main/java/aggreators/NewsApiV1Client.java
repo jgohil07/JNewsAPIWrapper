@@ -66,6 +66,9 @@ final class NewsApiV1Client {
 		if (!"ok".equals(status)) {
 			String code = root.path("code").asText(null);
 			String message = root.path("message").asText("status was " + status);
+			if (apiKey != null && !apiKey.isEmpty()) {
+				message = message.replace(apiKey, "***"); // never echo the key back
+			}
 			throw new NewsApiException(code, message + " (HTTP " + response.status() + " from "
 					+ HttpFetcher.redact(target) + ")");
 		}

@@ -53,6 +53,40 @@ class DeduperTest {
 	}
 
 	@Test
+	void sameSourceRecurringHeadlinesStaySeparate() {
+		// Review finding 1: two NSE-style "Company: Updates" items from one source must never collapse.
+		List<NewsItem> out = Deduper.merge(List.of(
+				item("mint", "Reliance Industries Limited quarterly update for investors", "https://m.example/1", T, "economy"),
+				item("mint", "Reliance Industries Limited quarterly update for investors", "https://m.example/2", T.plusSeconds(3600), "economy")),
+				Map.of());
+		assertEquals(2, out.size());
+	}
+
+	@Test
+	void filingsAreNeverMergedOnTitle() {
+		NewsItem a = filing("Reliance Industries Limited: Credit Rating", "https://nse.example/a.pdf", T);
+		NewsItem b = new NewsItem(Validator.id("https://nse.example/b.pdf"), a.title(), "https://nse.example/b.pdf",
+				new SourceRef("other-exchange-feed", "x"), T.plusSeconds(60), T, null, "filing", "in", "en",
+				List.of("filings"), List.of(), List.of(), List.of());
+		assertEquals(2, Deduper.merge(List.of(a, b), Map.of()).size());
+	}
+
+	@Test
+	void titleGroupsDoNotChain() {
+		List<NewsItem> out = Deduper.merge(List.of(
+				item("a", "Monsoon arrives in Kerala ahead of schedule", "https://a.example/1", T, "india"),
+				item("b", "Monsoon arrives in Kerala ahead of schedule", "https://b.example/1", T.plus(Duration.ofHours(30)), "india"),
+				item("c", "Monsoon arrives in Kerala ahead of schedule", "https://c.example/1", T.plus(Duration.ofHours(60)), "india")),
+				Map.of());
+		assertEquals(2, out.size(), "c is 60 h from the anchor, so it starts its own group");
+	}
+
+	static NewsItem filing(String title, String url, Instant at) {
+		return new NewsItem(Validator.id(url), title, url, new SourceRef("nse-symbol", "NSE"), at, at, null, "filing",
+				"in", "en", List.of("filings"), List.of(), List.of(), List.of());
+	}
+
+	@Test
 	void shortOrDistantHeadlinesAreNotMerged() {
 		assertEquals(2, Deduper.merge(List.of(
 				item("a", "Live updates", "https://a.example/1", T, "world"),

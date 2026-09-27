@@ -24,6 +24,11 @@ public interface NewsSource {
 		return null;
 	}
 
+	/** @return true when an empty result is a valid answer (a search), not a broken feed */
+	default boolean emptyIsHealthy() {
+		return false;
+	}
+
 	/** @return a non-fatal remark about the last {@link #fetch()} (e.g. degraded enrichment), or null */
 	default String note() {
 		return null;
