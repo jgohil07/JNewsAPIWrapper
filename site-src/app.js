@@ -242,7 +242,10 @@
       const leaves = leavesOf(id);
       return windowed.filter((i) => i.categories.some((c) => leaves.includes(c))).length;
     };
-    const nodes = [el('li', null, railButton('all', 'All', windowed.length, '', '0', false))];
+    // Every row reserves the same caret column on the right (a spacer when there is nothing to expand), so all
+    // counts line up in one column.
+    const spacer = () => el('span', { class: 'chev-space', 'aria-hidden': 'true' });
+    const nodes = [el('li', null, el('div', { class: 'rail-row' }, railButton('all', 'All', windowed.length, '', '0', false), spacer()))];
     state.tops.forEach((id, idx) => {
       const c = cat(id);
       const kids = c.children;
@@ -254,7 +257,7 @@
             class: 'chev', type: 'button', 'aria-expanded': String(open), 'aria-controls': 'sub-' + id,
             'aria-label': (open ? 'Collapse ' : 'Expand ') + c.label, title: (open ? 'Collapse' : 'Expand') + ' (e)',
             onclick: () => toggleExpanded(id)
-          }, open ? '▾' : '▸') : null));
+          }, open ? '▾' : '▸') : spacer()));
       if (kids.length && open) {
         li.append(el('ul', { class: 'rail-sub', id: 'sub-' + id },
           kids.map((k) => el('li', null, railButton(k, cat(k).label, counts.get(k) || 0, catHealth(k), '', true)))));
@@ -289,7 +292,7 @@
       'aria-current': state.view === 'list' && state.cat === id ? 'true' : 'false',
       onclick: () => go(id), title: key ? label + ' (shortcut ' + key + ')' : label
     },
-    el('span', { class: 'key', 'aria-hidden': 'true', text: key }),
+    sub ? null : el('span', { class: 'key', 'aria-hidden': 'true', text: key }),
     id === 'all' ? null : el('span', { class: 'dot' + (health ? ' ' + health : ''), title: health === 'bad' ? 'below its minimum of healthy sources' : health === 'warn' ? 'some sources unhealthy' : 'healthy' }),
     el('span', { class: 'label', text: label }),
     el('span', { class: 'n', text: String(n) }));

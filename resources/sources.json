@@ -24,14 +24,14 @@
   },
   {
    "id": "india-business",
-   "label": "India Companies & Banking",
+   "label": "Companies & Banking",
    "group": "finance",
    "minHealthy": 2,
    "required": true
   },
   {
    "id": "economy",
-   "label": "India Economy & Policy",
+   "label": "Economy & Policy",
    "group": "finance",
    "minHealthy": 2,
    "required": true
@@ -45,7 +45,7 @@
   },
   {
    "id": "business",
-   "label": "Global Markets & Business",
+   "label": "Global Business",
    "group": "finance",
    "minHealthy": 2,
    "required": true

@@ -11,7 +11,7 @@ and adds:
   | Category | Sources |
   |---|---|
   | India | Economic Times, Mint, The Hindu, NDTV Profit |
-  | Finance | India Markets, India Companies & Banking, India Economy & Policy (RBI included), NSE Filings, Global Markets & Business |
+  | Finance | India Markets, Companies & Banking, Economy & Policy (India, RBI included), NSE Filings, Global Business |
   | Global | BBC, The Guardian, Al Jazeera, NPR, DW |
   | Tech | Ars Technica, The Verge, Hacker News, Lobsters, and others |
   | Science | BBC, The Guardian, NPR, NASA, ScienceDaily, The Hindu |
