@@ -1,0 +1,73 @@
+# Builds the jnews site from public feeds and deploys it to GitHub Pages every 6 hours.
+# Fail-loud policy: if a required category has too few healthy sources, `jnews site build` exits 1, this workflow
+# fails, and the previous deployment stays live (the page then shows its age and turns amber/red).
+name: News site
+
+on:
+  schedule:
+    - cron: '23 */6 * * *'   # minute 23 avoids the top-of-hour scheduling backlog
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.github/heartbeat'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build and test
+        run: ./mvnw -B -ntp verify
+
+      - name: Fetch news and build the site
+        run: |
+          set +e
+          java -jar target/jnews.jar site build --out _site --refresh-hours 6
+          code=$?
+          set -e
+          if [ "$code" -eq 3 ]; then
+            echo "::warning title=Partial refresh::Some sources are unhealthy; the site's Source health view lists them."
+          elif [ "$code" -ne 0 ]; then
+            echo "::error title=Site not built::A required category is below its minimum of healthy sources (see log). The previous deployment stays live."
+            exit "$code"
+          fi
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
